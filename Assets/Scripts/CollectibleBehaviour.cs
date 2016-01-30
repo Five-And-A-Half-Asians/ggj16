@@ -2,16 +2,15 @@
 using System.Collections;
 
 public class CollectibleBehaviour : MonoBehaviour {
-    public GameObject player;
 	// Use this for initialization
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject == player) {
-            player.GetComponent<ScoreManager>().addCollectible("C1");
+        if (col.gameObject.tag == "Player") {
+            //col.gameObject.GetComponent<ScoreManager>().addCollectible("C1");
             //Destroy(gameObject);
-            FindObjectOfType<MainScene>().CheckKeyPointCollision(gameObject.GetInstanceID());
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<MeshRenderer>().enabled = !FindObjectOfType<MainScene>().CheckKeyPointCollision(gameObject);
+           
         }
     }
 }

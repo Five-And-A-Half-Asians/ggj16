@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
-    public GUIText roundText;
-    public GUIText scoreText;
-    public GUIText startEndText;
-    public GUIText timerText;
+    public Text roundText;
+    public Text scoreText;
+    public Text centerText;
+    public Text timerText;
 
     public float randRange = 32f;
 	public float randRangeStep = 4f;
@@ -21,6 +21,7 @@ public class MainScene : MonoBehaviour {
 
     private int score = 0;
     private bool gameOver;
+    private float timeElapsed = 0;
 
 	public GameObject[] collectiblePrefabs;
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
@@ -46,14 +47,15 @@ public class MainScene : MonoBehaviour {
         SpawnKeyPoint(new Vector3(0, 0, 10));
         Time.timeScale = 0;
 		score = 0;
-		startEndText.text = "Touch to Start";
-
+        centerText.text = "Tap to Start";
     }
 
     // Update is called once per frame
     void Update()
     {
-		if (gameOver) {
+        timeElapsed += Time.deltaTime;
+
+        if (gameOver) {
 			if (Input.GetMouseButton (0) || Input.GetButton ("Fire1"))
 				Start ();
 			else
@@ -63,7 +65,7 @@ public class MainScene : MonoBehaviour {
 		if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
 		{
 			Time.timeScale = 1;
-			startEndText.text = "";
+            centerText.text = "";
 		}
 		PlayerMove();
 		if (nextKeypointIndex == keypointIDs.Count)
@@ -86,8 +88,12 @@ public class MainScene : MonoBehaviour {
 		}
 	
 		// Update HUD
-		scoreText.text = "Score: " + score;
-		roundText.text = "Round: " + keypointIDs.Count;
+		scoreText.text = score + " collected";
+		roundText.text = "Round " + keypointIDs.Count;
+        var minutes = timeElapsed / 60;
+        var seconds = timeElapsed % 60;
+        var fraction = (timeElapsed * 100) % 100;
+        timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
     }
 
     void NewRound()
@@ -99,7 +105,7 @@ public class MainScene : MonoBehaviour {
         player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
         Time.timeScale = 0;
-		startEndText.text = "Touch to Continue";
+        centerText.text = "Tap to Continue";
     }
 
     public bool CheckKeyPointCollision(GameObject go)
@@ -148,14 +154,11 @@ public class MainScene : MonoBehaviour {
     {
         foreach (GameObject go in keypointIDs)
         {
-
             Destroy(go.gameObject);
         }
-        startEndText.fontSize = Screen.height / 20;
-
         
 		player.transform.position = new Vector3(0, 0, 0);
-		startEndText.text = "GAME OVER \nSCORE: " + score + "\nTOUCH TO START";
+        centerText.text = "GAME OVER \nSCORE: " + score + "\nTAP TO START";
 
         gameOver = true;
     }

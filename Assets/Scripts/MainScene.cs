@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
     public GameObject[] collectiblePrefabs;
-    public GUIText scoreText;
-    public GUIText gameoverText;
+    public Text scoreText;
+    //public Text gameoverText; //TODO: put gameovertext back in
 
     public int count = 1;
     public float randRange = 50f;
@@ -37,7 +38,7 @@ public class MainScene : MonoBehaviour {
         //SpawnKeypoints();
         SpawnKeyPoint(new Vector3(0,0,10));
         scoreText.fontSize = Screen.height / 20;
-        gameoverText.fontSize = Screen.height / 20;
+        //gameoverText.fontSize = Screen.height / 20;
         score = 0;
         UpdateScore();
         Time.timeScale = 0;
@@ -48,7 +49,7 @@ public class MainScene : MonoBehaviour {
 	    if(Input.GetMouseButton(0))
         {
             Time.timeScale = 1;
-            gameoverText.text = "";
+            //gameoverText.text = "";
         }
         PlayerMove();
         if (targetIndex == keypointIDs.Count)
@@ -126,5 +127,6 @@ public class MainScene : MonoBehaviour {
     void UpdateScore()
     {
         scoreText.text = "Score: " + score;
+        scoreText.fontSize = 3;
     }
 }

@@ -104,8 +104,9 @@ public class MainScene : MonoBehaviour {
         roundText.text = "Round " + keypointIDs.Count;
         var minutes = timeElapsed / 60;
         var seconds = timeElapsed % 60;
-        var fraction = (timeElapsed * 100) % 100;
-        timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+        //var fraction = (timeElapsed * 100) % 100;
+        //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     void NewRound()

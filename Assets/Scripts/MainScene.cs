@@ -10,8 +10,8 @@ public class MainScene : MonoBehaviour {
     public Text centerText;
     public Text timerText;
 
-    public float randRange = 32f;
-	public float randRangeStep = 4f;
+    public float randRange = 1f;
+	public float randRangeStep = 0.5f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -62,6 +62,8 @@ public class MainScene : MonoBehaviour {
 			else
 				return;
 		}
+        if (Input.GetKeyUp(KeyCode.Escape))
+            Start();
 
         if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
         {

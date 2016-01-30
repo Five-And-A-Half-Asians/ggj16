@@ -5,8 +5,13 @@ using System.Collections.Generic;
 public class MainScene : MonoBehaviour {
     public GameObject player;
     public GameObject[] collectiblePrefabs;
+    public GUIText score;
+    public GUIText gameover;
+
     public int count = 1;
     public float randRange = 50f;
+    public float distance = 5f;
+
     
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
                                     //new Color(0f, 196/255f, 196/255f),// new Color(91/255f,216/255f,216/255f)
@@ -29,6 +34,7 @@ public class MainScene : MonoBehaviour {
         keypointIDs = new List<GameObject>();
         //SpawnKeypoints();
         SpawnKeyPoint(new Vector3(0,0,10));
+        score.text = "Score: 0";
         Time.timeScale = 0;
 	}
 	
@@ -37,7 +43,9 @@ public class MainScene : MonoBehaviour {
 	    if(Input.GetMouseButton(0))
         {
             Time.timeScale = 1;
+            gameover.text = "";
         }
+        PlayerMove();
         if (targetIndex == keypointIDs.Count)
         {
             if (targetIndex == 1)
@@ -100,5 +108,10 @@ public class MainScene : MonoBehaviour {
         keypointIDs.Add(obj);
         int c = Random.Range(0, colors.Length);
         obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
+    }
+
+    void PlayerMove()
+    {
+        player.transform.position = player.transform.position + Camera.main.transform.forward * distance * Time.deltaTime;
     }
 }

@@ -21,8 +21,9 @@ public class CollectibleBehaviour : MonoBehaviour {
             //Destroy(gameObject);
             if (ms.CheckKeyPointCollision(gameObject))
             {
-                anim.SetBool("Active", false);
-                col.gameObject.GetComponent<Rigidbody>().velocity *= 1.5f;
+                SetInvisible();
+                //anim.SetBool("Active", false);
+                //col.gameObject.GetComponent<Rigidbody>().velocity *= 1.5f;
                 //while (gameObject.GetComponent<MeshRenderer>().enabled)
                 //{
                   //  Vector3 delta = new Vector3(3, 0, 3);
@@ -37,12 +38,12 @@ public class CollectibleBehaviour : MonoBehaviour {
     {
         gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
-
+    /*
     void LateUpdate()
     {
         if (!anim.GetBool("Active"))
         {
             transform.localPosition += 1.4f*startPos;
         }
-    }
+    }*/
 }

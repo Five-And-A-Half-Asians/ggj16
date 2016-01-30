@@ -537,17 +537,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1907988687}
-  roundText: {fileID: 0}
-  scoreText: {fileID: 0}
-  startEndText: {fileID: 0}
-  timerText: {fileID: 0}
+  roundText: {fileID: 1719556928}
+  scoreText: {fileID: 984845331}
+  startEndText: {fileID: 2065242566}
+  timerText: {fileID: 919271136}
   randRange: 20
   randRangeStep: 4
   playerMoveSpeed: 5
   collectiblePrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 122070, guid: 07fac52fc09407347839ca923b47abd3, type: 2}
+  - {fileID: 126758, guid: 0f42fc8af498e7d4a8757e130a1168e8, type: 2}
+  - {fileID: 182676, guid: fee54206bdcb15e4a93f84956670ddcf, type: 2}
 --- !u!4 &767662098
 Transform:
   m_ObjectHideFlags: 0

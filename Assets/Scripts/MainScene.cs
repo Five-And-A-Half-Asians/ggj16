@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
-    public Text roundText;
-    public Text scoreText;
-    public Text startEndText;
-    public Text timerText;
+    public GUIText roundText;
+    public GUIText scoreText;
+    public GUIText startEndText;
+    public GUIText timerText;
 
     public float randRange = 32f;
 	public float randRangeStep = 4f;

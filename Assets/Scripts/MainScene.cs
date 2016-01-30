@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
+    public Text roundText;
+    public Text scoreText;
+    public Text centerText;
+    public Text timerText;
 
     public float randRange = 32f;
 	public float randRangeStep = 4f;
@@ -44,7 +48,7 @@ public class MainScene : MonoBehaviour {
         SpawnKeyPoint(new Vector3(0, 0, 10));
         score = 0;
 		playerMoveSpeed = 0f;
-
+        centerText.text = "Tap to Start";
     }
 
     // Update is called once per frame
@@ -59,8 +63,18 @@ public class MainScene : MonoBehaviour {
 				return;
 		}
 
-		if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
-			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
+        if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
+        {
+            playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
+            if (timeElapsed < 5)
+            {
+                centerText.text = "Hold to accelerate";
+            }
+            else
+            {
+                centerText.text = "";
+            }
+        }
 
 		if (playerMoveSpeed > 0) 
 			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 0.999f - 0.01f);
@@ -84,8 +98,14 @@ public class MainScene : MonoBehaviour {
 			randRange += randRangeStep;
 			NewRound();
 		}
-	
-		// Update HUD
+
+        // Update HUD
+        scoreText.text = score + " collected";
+        roundText.text = "Round " + keypointIDs.Count;
+        var minutes = timeElapsed / 60;
+        var seconds = timeElapsed % 60;
+        var fraction = (timeElapsed * 100) % 100;
+        timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
     }
 
     void NewRound()
@@ -97,6 +117,7 @@ public class MainScene : MonoBehaviour {
         player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
 		playerMoveSpeed = 0f;
+        centerText.text = "Tap to Continue";
     }
 
     public bool CheckKeyPointCollision(GameObject go)
@@ -149,6 +170,7 @@ public class MainScene : MonoBehaviour {
         }
         
 		player.transform.position = new Vector3(0, 0, 0);
+        centerText.text = "GAME OVER \nSCORE: " + score + "\nTAP TO START";
 
         gameOver = true;
     }

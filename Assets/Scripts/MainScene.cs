@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class MainScene : MonoBehaviour {
     public GameObject player;
 
-
     public float randRange = 32f;
 	public float randRangeStep = 4f;
     
@@ -18,6 +17,7 @@ public class MainScene : MonoBehaviour {
 
     private int score = 0;
     private bool gameOver;
+    private float timeElapsed = 0;
 
 	public GameObject[] collectiblePrefabs;
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
@@ -50,7 +50,9 @@ public class MainScene : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-		if (gameOver) {
+        timeElapsed += Time.deltaTime;
+
+        if (gameOver) {
 			if (Input.GetMouseButton (0) || Input.GetButton ("Fire1"))
 				Start ();
 			else
@@ -143,7 +145,6 @@ public class MainScene : MonoBehaviour {
     {
         foreach (GameObject go in keypointIDs)
         {
-
             Destroy(go.gameObject);
         }
         

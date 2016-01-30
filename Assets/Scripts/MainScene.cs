@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class MainScene : MonoBehaviour {
     public GameObject player;
 
-    public float randRange = 32f;
-	public float randRangeStep = 4f;
+    public float randRange = 1f;
+	public float randRangeStep = 0.5f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -59,12 +59,17 @@ public class MainScene : MonoBehaviour {
 				return;
 		}
 
-		if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
-			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
+		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
+			float playerAccel = 0.5f * Mathf.Pow (playerMoveSpeed, 0.5f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
+			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
+		}
 
-		if (playerMoveSpeed > 0) 
-			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 0.999f - 0.01f);
+		if (playerMoveSpeed > 0) { // don't start moving until tap
 
+			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
+
+			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
+		}
 		PlayerMove();
 		if (nextKeypointIndex == keypointIDs.Count)
 		{

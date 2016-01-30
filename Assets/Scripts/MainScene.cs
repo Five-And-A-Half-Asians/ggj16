@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class MainScene : MonoBehaviour {
     
-    public float min_rand = 0f;
-    public float max_rand = 100f;
+    public float randRange = 100f;
 
     List<int> keypointIDs;
     int index = 0;
@@ -35,9 +34,9 @@ public class MainScene : MonoBehaviour {
 
     void SpawnKeypoints()
     {
-        float x = Random.Range(min_rand, max_rand);
-        float y = Random.Range(min_rand, max_rand);
-        float z = Random.Range(min_rand, max_rand);
+        float x = Random.Range(-randRange, randRange);
+        float y = Random.Range(-randRange, randRange);
+        float z = Random.Range(-randRange, randRange);
         Vector3 spawn = new Vector3(x, y, z);
 
 

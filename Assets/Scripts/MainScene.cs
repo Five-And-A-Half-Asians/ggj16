@@ -10,7 +10,6 @@ public class MainScene : MonoBehaviour {
     public Text startEndText;
     public Text timerText;
 
-    public int count;
     public float randRange = 32f;
 	public float randRangeStep = 4f;
     
@@ -20,7 +19,7 @@ public class MainScene : MonoBehaviour {
 	int nextKeypointIndex;
 
 
-    private int score;
+    private int score = 0;
     private bool gameOver;
 
 	public GameObject[] collectiblePrefabs;
@@ -41,52 +40,51 @@ public class MainScene : MonoBehaviour {
     void Start()
     {
         gameOver = false;
-        startEndText.text = "";
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
         nextKeypointIndex = 0;
         SpawnKeyPoint(new Vector3(0, 0, 10));
-        count = 1;
-        score = 0;
         Time.timeScale = 0;
+		score = 0;
+		startEndText.text = "Touch to Start";
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
-        {
-            Time.timeScale = 1;
-            startEndText.text = "";
-        }
-        PlayerMove();
-        if (nextKeypointIndex == keypointIDs.Count)
-        {
+		if (gameOver) {
+			if (Input.GetMouseButton (0) || Input.GetButton ("Fire1"))
+				Start ();
+			else
+				return;
+		}
+
+		if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
+		{
+			Time.timeScale = 1;
+			startEndText.text = "";
+		}
+		PlayerMove();
+		if (nextKeypointIndex == keypointIDs.Count)
+		{
 			switch (nextKeypointIndex) {
 			case 0:
 				SpawnKeyPoint (new Vector3 (0, 0, 10));
 				break;
 			case 1:
-				float randX = Random.Range (0, 10);
-				float randY = Random.Range (0, 10);
-				SpawnKeyPoint (new Vector3 (randX, randY, 30));
+				float randX = Random.Range (0, randRange/2);
+				float randY = Random.Range (0, randRange/2);
+				SpawnKeyPoint (new Vector3 (randX, randY, randRange));
 				break;
 			default:
 				SpawnKeyPoint (RandomPoint (randRange));
 				break;
-            }
+			}
 			randRange += randRangeStep;
-            NewRound();
-        }
-
-        if (gameOver)
-        {
-            if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
-            {
-                Start();
-            }
-        }
-
+			NewRound();
+		}
+	
 		// Update HUD
 		scoreText.text = "Score: " + score;
 		roundText.text = "Round: " + keypointIDs.Count;
@@ -101,6 +99,7 @@ public class MainScene : MonoBehaviour {
         player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
         Time.timeScale = 0;
+		startEndText.text = "Touch to Continue";
     }
 
     public bool CheckKeyPointCollision(GameObject go)
@@ -156,7 +155,7 @@ public class MainScene : MonoBehaviour {
 
         
 		player.transform.position = new Vector3(0, 0, 0);
-		startEndText.text = "GAME OVER \nSCORE: " + score + "\nPRESS TO RESTART";
+		startEndText.text = "GAME OVER \nSCORE: " + score + "\nTOUCH TO START";
 
         gameOver = true;
     }

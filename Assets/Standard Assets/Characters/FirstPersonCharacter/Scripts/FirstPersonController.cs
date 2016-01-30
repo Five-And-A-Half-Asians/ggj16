@@ -39,9 +39,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 // (Unity's VR support will update the facing of the camera)
             }
 
-            //we should update the facing of the character to fit the camera
-            GameObject myChild = GameObject.Find("Ethan");
-            myChild.transform.localRotation = m_Camera.transform.localRotation;
+            //we could update the facing of the character to fit the camera
+            //GameObject myChild = GameObject.Find("Ethan");
+            //myChild.transform.localRotation = m_Camera.transform.localRotation;
 
             // move the character in the facing direction
             transform.position = transform.position + (m_Camera.transform.forward * m_MoveSpeed);

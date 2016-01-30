@@ -5,23 +5,25 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
-    public GameObject[] collectiblePrefabs;
     public Text roundText;
     public Text scoreText;
     public Text startEndText;
     public Text timerText;
 
-    public int roundCount;
     public int count;
     public float randRange = 32f;
 	public float randRangeStep = 4f;
     
 	public float playerMoveSpeed = 5f;
 
+	List<GameObject> keypointIDs;
+	int nextKeypointIndex;
+
+
     private int score;
     private bool gameOver;
 
-
+	public GameObject[] collectiblePrefabs;
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
                                     //new Color(0f, 196/255f, 196/255f),// new Color(91/255f,216/255f,216/255f)
                                     new Color(0, 217/255f, 108/255f),// new Color(91/255f,230,160),
@@ -34,9 +36,6 @@ public class MainScene : MonoBehaviour {
                                     //new Color(248/255f,0f,148/255f),// new Color(250, 91, 186),
                                     new Color(164/255f,64/255f,184/255f) };// new Color(196,132,109),
     //new Color(108/255f,64/255f,184/255f) };// new Color(160,132,209)};
-    List<GameObject> keypointIDs;
-
-    int targetIndex;
 
     // Use this for initialization
     void Start()
@@ -45,9 +44,8 @@ public class MainScene : MonoBehaviour {
         startEndText.text = "";
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
-        targetIndex = 0;
+        nextKeypointIndex = 0;
         SpawnKeyPoint(new Vector3(0, 0, 10));
-        roundCount = 1;
         count = 1;
         score = 0;
         Time.timeScale = 0;
@@ -62,9 +60,9 @@ public class MainScene : MonoBehaviour {
             startEndText.text = "";
         }
         PlayerMove();
-        if (targetIndex == keypointIDs.Count)
+        if (nextKeypointIndex == keypointIDs.Count)
         {
-			switch (targetIndex) {
+			switch (nextKeypointIndex) {
 			case 0:
 				SpawnKeyPoint (new Vector3 (0, 0, 10));
 				break;
@@ -79,7 +77,6 @@ public class MainScene : MonoBehaviour {
             }
 			randRange += randRangeStep;
             NewRound();
-            UpdateHUD();
         }
 
         if (gameOver)
@@ -92,7 +89,7 @@ public class MainScene : MonoBehaviour {
 
 		// Update HUD
 		scoreText.text = "Score: " + score;
-		roundText.text = "Round: " + roundCount;
+		roundText.text = "Round: " + keypointIDs.Count;
     }
 
     void NewRound()
@@ -102,18 +99,17 @@ public class MainScene : MonoBehaviour {
             go.GetComponent<MeshRenderer>().enabled = true;
         }
         player.transform.position = new Vector3(0, 0, 0);
-        roundCount++;
-        targetIndex = 0;
+        nextKeypointIndex = 0;
         Time.timeScale = 0;
     }
 
     public bool CheckKeyPointCollision(GameObject go)
     {
-        if (keypointIDs[targetIndex] == go)
+        if (keypointIDs[nextKeypointIndex] == go)
         {
 
-            targetIndex++;
-            Debug.Log("Found " + targetIndex + " items.");
+            nextKeypointIndex++;
+            Debug.Log("Found " + nextKeypointIndex + " items.");
             score++;
             return true;
         }

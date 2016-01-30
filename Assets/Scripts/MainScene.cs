@@ -64,6 +64,7 @@ public class MainScene : MonoBehaviour {
             NewRound();
             score++;
             UpdateScore();
+            gameoverText.text = "PRESS TO START";
         }
 	}
 

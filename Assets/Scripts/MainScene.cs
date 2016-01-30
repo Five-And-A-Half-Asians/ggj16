@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class MainScene : MonoBehaviour {
     public GameObject player;
 
-    public float randRange = 1f;
+    public float randRange = 2f;
 	public float randRangeStep = 0.5f;
     
 	public float playerMoveSpeed = 0f;

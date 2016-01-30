@@ -13,12 +13,13 @@ public class MainScene : MonoBehaviour {
 
     public int roundCount;
     public int count;
-    public float randRange = 50f;
-    public float distance = 5f;
+    public float randRange = 32f;
+	public float randRangeStep = 4f;
+    
+	public float playerMoveSpeed = 5f;
 
     private int score;
-    private bool restart;
-    private bool lose;
+    private bool gameOver;
 
 
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
@@ -40,20 +41,16 @@ public class MainScene : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        restart = false;
-        lose = false;
+        gameOver = false;
         startEndText.text = "";
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
         targetIndex = 0;
-        //SpawnKeypoints();
         SpawnKeyPoint(new Vector3(0, 0, 10));
         roundCount = 1;
         count = 1;
         score = 0;
-        UpdateScore();
         Time.timeScale = 0;
-        roundText.text = "Round: " + roundCount;
     }
 
     // Update is called once per frame
@@ -67,28 +64,32 @@ public class MainScene : MonoBehaviour {
         PlayerMove();
         if (targetIndex == keypointIDs.Count)
         {
-            if (targetIndex == 1)
-            {
-                float randX = Random.Range(0, 10);
-                float randY = Random.Range(0, 10);
-                SpawnKeyPoint(new Vector3(randX, randY, 30));
+			switch (targetIndex) {
+			case 0:
+				SpawnKeyPoint (new Vector3 (0, 0, 10));
+				break;
+			case 1:
+				float randX = Random.Range (0, 10);
+				float randY = Random.Range (0, 10);
+				SpawnKeyPoint (new Vector3 (randX, randY, 30));
+				break;
+			default:
+				SpawnKeyPoint (RandomPoint (randRange));
+				break;
             }
-            else
-            {
-                SpawnKeyPoint(RandomPoint(randRange));
-            }
+			randRange += randRangeStep;
             NewRound();
-            UpdateScore();
+            UpdateHUD();
         }
 
-        if (restart)
+        if (gameOver)
         {
-            player.transform.position = new Vector3(0, 0, 0);
             if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
             {
                 Start();
             }
         }
+		UpdateHUD ();
     }
 
     void NewRound()
@@ -99,7 +100,6 @@ public class MainScene : MonoBehaviour {
         }
         player.transform.position = new Vector3(0, 0, 0);
         roundCount++;
-        roundText.text = "Round: " + roundCount;
         targetIndex = 0;
         Time.timeScale = 0;
     }
@@ -112,7 +112,6 @@ public class MainScene : MonoBehaviour {
             targetIndex++;
             Debug.Log("Found " + targetIndex + " items.");
             score++;
-            UpdateScore();
             return true;
         }
         else
@@ -122,14 +121,7 @@ public class MainScene : MonoBehaviour {
             return false;
         }
     }
-
-    void SpawnKeypoints()
-    {
-        for (int i = 0; i < count; i++)
-        {
-            SpawnKeyPoint(RandomPoint(randRange));
-        }
-    }
+		
 
     Vector3 RandomPoint(float range)
     {
@@ -151,12 +143,13 @@ public class MainScene : MonoBehaviour {
 
     void PlayerMove()
     {
-        player.transform.position = player.transform.position + Camera.main.transform.forward * distance * Time.deltaTime;
+        player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
     }
 
-    void UpdateScore()
+    void UpdateHUD()
     {
         scoreText.text = "Score: " + score;
+		roundText.text = "Round: " + roundCount;
     }
 
     void GameOver()
@@ -168,16 +161,10 @@ public class MainScene : MonoBehaviour {
         }
         startEndText.fontSize = Screen.height / 20;
 
-        while (true)
-        {
+        
+		player.transform.position = new Vector3(0, 0, 0);
+		startEndText.text = "GAME OVER \nSCORE: " + score + "\nPRESS TO RESTART";
 
-            startEndText.text = "GAME OVER \nSCORE: " + score + "\nPRESS TO RESTART";
-
-            restart = true;
-            break;
-
-        }
-
-        //Start();
+        gameOver = true;
     }
 }

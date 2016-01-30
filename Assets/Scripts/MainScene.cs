@@ -5,12 +5,14 @@ using System.Collections.Generic;
 public class MainScene : MonoBehaviour {
     public GameObject player;
     public GameObject[] collectiblePrefabs;
-    public GUIText score;
-    public GUIText gameover;
+    public GUIText scoreText;
+    public GUIText gameoverText;
 
     public int count = 1;
     public float randRange = 50f;
     public float distance = 5f;
+
+    private int score;
 
     
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
@@ -34,7 +36,10 @@ public class MainScene : MonoBehaviour {
         keypointIDs = new List<GameObject>();
         //SpawnKeypoints();
         SpawnKeyPoint(new Vector3(0,0,10));
-        score.text = "Score: 0";
+        scoreText.fontSize = Screen.height / 20;
+        gameoverText.fontSize = Screen.height / 20;
+        score = 0;
+        UpdateScore();
         Time.timeScale = 0;
 	}
 	
@@ -43,7 +48,7 @@ public class MainScene : MonoBehaviour {
 	    if(Input.GetMouseButton(0))
         {
             Time.timeScale = 1;
-            gameover.text = "";
+            gameoverText.text = "";
         }
         PlayerMove();
         if (targetIndex == keypointIDs.Count)
@@ -53,8 +58,12 @@ public class MainScene : MonoBehaviour {
                 float randX = Random.Range(0, 10);
                 float randY = Random.Range(0,10);
                 SpawnKeyPoint(new Vector3(randX, randY, 30));
+            } else {
+                SpawnKeyPoint(RandomPoint(randRange));
             }
             NewRound();
+            score++;
+            UpdateScore();
         }
 	}
 
@@ -95,8 +104,7 @@ public class MainScene : MonoBehaviour {
     {
         range = Mathf.Abs(range);
         float x = Random.Range(-range, range);
-        //float y = Random.Range(-randRange, randRange);
-        float y = 0;
+        float y = Random.Range(-range, range);
         float z = Random.Range(-range, range);
         return new Vector3(x, y, z);
     }
@@ -113,5 +121,10 @@ public class MainScene : MonoBehaviour {
     void PlayerMove()
     {
         player.transform.position = player.transform.position + Camera.main.transform.forward * distance * Time.deltaTime;
+    }
+
+    void UpdateScore()
+    {
+        scoreText.text = "Score: " + score;
     }
 }

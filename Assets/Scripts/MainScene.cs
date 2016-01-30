@@ -63,7 +63,7 @@ public class MainScene : MonoBehaviour {
 				return;
 		}
         if (Input.GetKeyUp(KeyCode.Escape))
-            Start();
+            GameOver();
 
         if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
         {

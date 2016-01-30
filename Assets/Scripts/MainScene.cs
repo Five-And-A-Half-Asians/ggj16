@@ -5,15 +5,12 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
-    public GUIText roundText;
-    public GUIText scoreText;
-    public GUIText startEndText;
-    public GUIText timerText;
+
 
     public float randRange = 32f;
 	public float randRangeStep = 4f;
     
-	public float playerMoveSpeed = 5f;
+	public float playerMoveSpeed = 0f;
 
 	List<GameObject> keypointIDs;
 	int nextKeypointIndex;
@@ -38,15 +35,15 @@ public class MainScene : MonoBehaviour {
 
     // Use this for initialization
     void Start()
-    {
+	{
+		Time.timeScale = 1;
         gameOver = false;
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
         nextKeypointIndex = 0;
         SpawnKeyPoint(new Vector3(0, 0, 10));
-        Time.timeScale = 0;
-		score = 0;
-		startEndText.text = "Touch to Start";
+        score = 0;
+		playerMoveSpeed = 0f;
 
     }
 
@@ -61,10 +58,11 @@ public class MainScene : MonoBehaviour {
 		}
 
 		if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
-		{
-			Time.timeScale = 1;
-			startEndText.text = "";
-		}
+			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
+
+		if (playerMoveSpeed > 0) 
+			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 0.999f - 0.01f);
+
 		PlayerMove();
 		if (nextKeypointIndex == keypointIDs.Count)
 		{
@@ -86,8 +84,6 @@ public class MainScene : MonoBehaviour {
 		}
 	
 		// Update HUD
-		scoreText.text = "Score: " + score;
-		roundText.text = "Round: " + keypointIDs.Count;
     }
 
     void NewRound()
@@ -98,8 +94,7 @@ public class MainScene : MonoBehaviour {
         }
         player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
-        Time.timeScale = 0;
-		startEndText.text = "Touch to Continue";
+		playerMoveSpeed = 0f;
     }
 
     public bool CheckKeyPointCollision(GameObject go)
@@ -151,11 +146,8 @@ public class MainScene : MonoBehaviour {
 
             Destroy(go.gameObject);
         }
-        startEndText.fontSize = Screen.height / 20;
-
         
 		player.transform.position = new Vector3(0, 0, 0);
-		startEndText.text = "GAME OVER \nSCORE: " + score + "\nTOUCH TO START";
 
         gameOver = true;
     }

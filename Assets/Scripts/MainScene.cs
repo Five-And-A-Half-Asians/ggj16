@@ -3,29 +3,70 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MainScene : MonoBehaviour {
-    public GameObject collectiblePrefab;
+    public GameObject player;
+    public GameObject[] collectiblePrefabs;
     public int count = 1;
     public float randRange = 50f;
+    
+    Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
+                                    //new Color(0f, 196/255f, 196/255f),// new Color(91/255f,216/255f,216/255f)
+                                    new Color(0, 217/255f, 108/255f),// new Color(91/255f,230,160),
+                                    //new Color(123/255f, 212/255f, 34/255f),// new Color(170, 227, 113),
+                                    new Color(245/255f, 204/255f, 0f),// new Color(248, 222, 91),
+                                    //new Color(242/255f, 162/255f, 0f),// new Color(246, 195, 91),
+                                    new Color(255/255f,149/255f,0f),// new Color(255, 187,91),
+                                    //new Color(224/255f,75/255f,0f),// new Color(235,139,91),
+                                    new Color(247/255f,32/255f,32/255f),// new Color(249,111,111),
+                                    //new Color(248/255f,0f,148/255f),// new Color(250, 91, 186),
+                                    new Color(164/255f,64/255f,184/255f) };// new Color(196,132,109),
+                                    //new Color(108/255f,64/255f,184/255f) };// new Color(160,132,209)};
 
-    List<int> keypointIDs;
-    int index = 0;
+    List<GameObject> keypointIDs;
+    int targetIndex = 0;
     
 	// Use this for initialization
 	void Start () {
-        keypointIDs = new List<int>();
-        SpawnKeypoints();
+        keypointIDs = new List<GameObject>();
+        //SpawnKeypoints();
+        SpawnKeyPoint(new Vector3(0,0,10));
+        Time.timeScale = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    if(Input.GetMouseButton(0))
+        {
+            Time.timeScale = 1;
+        }
+        if (targetIndex == keypointIDs.Count)
+        {
+            if (targetIndex == 1)
+            {
+                float randX = Random.Range(0, 10);
+                float randY = Random.Range(0,10);
+                SpawnKeyPoint(new Vector3(randX, randY, 30));
+            }
+            NewRound();
+        }
 	}
 
-    public bool CheckKeyPointCollision(int ID)
+    void NewRound()
     {
-        if(keypointIDs[index] == ID)
+        foreach(GameObject go in keypointIDs)
         {
-            index++;
+            go.GetComponent<MeshRenderer>().enabled = true;
+        }
+        player.transform.position = new Vector3(0, 0, 0);
+        targetIndex = 0;
+        Time.timeScale = 0;
+    }
+
+    public bool CheckKeyPointCollision(GameObject go)
+    {
+        if(keypointIDs[targetIndex] == go)
+        {
+            targetIndex++;
+            Debug.Log("Found " + targetIndex + " items.");
             return true;
         } else
         {
@@ -38,17 +79,26 @@ public class MainScene : MonoBehaviour {
     {
         for(int i = 0; i< count; i++)
         {
-            SpawnKeyPoint();
+            SpawnKeyPoint(RandomPoint(randRange));
         }
     }
 
-    void SpawnKeyPoint()
+    Vector3 RandomPoint(float range)
     {
-        float x = Random.Range(-randRange, randRange);
-        float y = Random.Range(-randRange, randRange);
-        float z = Random.Range(-randRange, randRange);
-        Vector3 spawnLoc = new Vector3(x, y, z);
-        Object obj = Instantiate(collectiblePrefab, spawnLoc, new Quaternion(0,0,0,0));
-        keypointIDs.Add(obj.GetInstanceID());
+        range = Mathf.Abs(range);
+        float x = Random.Range(-range, range);
+        //float y = Random.Range(-randRange, randRange);
+        float y = 0;
+        float z = Random.Range(-range, range);
+        return new Vector3(x, y, z);
+    }
+
+    void SpawnKeyPoint(Vector3 loc)
+    {
+        int p = Random.Range(0, collectiblePrefabs.Length);
+        GameObject obj = (GameObject) Instantiate(collectiblePrefabs[p], loc, new Quaternion(0,0,0,0));
+        keypointIDs.Add(obj);
+        int c = Random.Range(0, colors.Length);
+        obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
     }
 }

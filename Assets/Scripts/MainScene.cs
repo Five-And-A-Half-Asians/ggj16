@@ -89,7 +89,10 @@ public class MainScene : MonoBehaviour {
                 Start();
             }
         }
-		UpdateHUD ();
+
+		// Update HUD
+		scoreText.text = "Score: " + score;
+		roundText.text = "Round: " + roundCount;
     }
 
     void NewRound()
@@ -144,12 +147,6 @@ public class MainScene : MonoBehaviour {
     void PlayerMove()
     {
         player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
-    }
-
-    void UpdateHUD()
-    {
-        scoreText.text = "Score: " + score;
-		roundText.text = "Round: " + roundCount;
     }
 
     void GameOver()

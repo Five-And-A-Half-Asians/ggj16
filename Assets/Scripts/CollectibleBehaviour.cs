@@ -17,7 +17,7 @@ public class CollectibleBehaviour : MonoBehaviour {
         if (col.gameObject == player) {
             player.GetComponent<ScoreManager>().addCollectible("C1");
             //Destroy(gameObject);
-            FindObjectOfType<MainScene>().checkKeyPointCollision(gameObject.GetInstanceID());
+            FindObjectOfType<MainScene>().CheckKeyPointCollision(gameObject.GetInstanceID());
             gameObject.GetComponent<MeshRenderer>().enabled = false;
         }
     }

@@ -37,8 +37,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             /*m_CharacterTargetRot *= Quaternion.Euler (0f, yRot, 0f);
             m_CameraTargetRot *= Quaternion.Euler (-xRot, 0f, 0f);*/
 
+            // buggy euler version: switch to http://forum.unity3d.com/threads/a-free-simple-smooth-mouselook.73117/
             m_CharacterTargetRot *= Quaternion.Euler(0f, 0f, 0f);
-
             Vector3 tempcameulers = camera.eulerAngles;
             tempcameulers.x += -xRot;
             tempcameulers.y += yRot;

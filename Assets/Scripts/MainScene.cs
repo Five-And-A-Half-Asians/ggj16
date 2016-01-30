@@ -41,6 +41,7 @@ public class MainScene : MonoBehaviour {
     void Start()
 	{
 		Time.timeScale = 1;
+        timeElapsed = 0;
         gameOver = false;
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();

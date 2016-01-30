@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
+    public Text roundText;
+    public Text scoreText;
+    public Text centerText;
+    public Text timerText;
 
     public float randRange = 2f;
 	public float randRangeStep = 0.5f;
@@ -44,7 +48,7 @@ public class MainScene : MonoBehaviour {
         SpawnKeyPoint(new Vector3(0, 0, 10));
         score = 0;
 		playerMoveSpeed = 0f;
-
+        centerText.text = "Tap to Start";
     }
 
     // Update is called once per frame
@@ -58,9 +62,11 @@ public class MainScene : MonoBehaviour {
 			else
 				return;
 		}
+        if (Input.GetKeyUp(KeyCode.Escape))
+            GameOver();
 
 		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
-			float playerAccel = 0.5f * Mathf.Pow (playerMoveSpeed, 0.5f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
+			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
 		}
 
@@ -70,7 +76,9 @@ public class MainScene : MonoBehaviour {
 
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
 		}
+
 		PlayerMove();
+
 		if (nextKeypointIndex == keypointIDs.Count)
 		{
 			switch (nextKeypointIndex) {
@@ -89,8 +97,20 @@ public class MainScene : MonoBehaviour {
 			randRange += randRangeStep;
 			NewRound();
 		}
-	
-		// Update HUD
+
+        // Update HUD
+        scoreText.text = score + " collected";
+        roundText.text = "Round " + keypointIDs.Count;
+        var minutes = timeElapsed / 60;
+        var seconds = timeElapsed % 60;
+        //var fraction = (timeElapsed * 100) % 100;
+        //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+		if (timeElapsed < 5)
+			centerText.text = "Hold to accelerate";
+		else
+			centerText.text = "";
     }
 
     void NewRound()
@@ -102,6 +122,7 @@ public class MainScene : MonoBehaviour {
         player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
 		playerMoveSpeed = 0f;
+        centerText.text = "Tap to Continue";
     }
 
     public bool CheckKeyPointCollision(GameObject go)
@@ -154,6 +175,7 @@ public class MainScene : MonoBehaviour {
         }
         
 		player.transform.position = new Vector3(0, 0, 0);
+        centerText.text = "GAME OVER \nSCORE: " + score + "\nTAP TO START";
 
         gameOver = true;
     }

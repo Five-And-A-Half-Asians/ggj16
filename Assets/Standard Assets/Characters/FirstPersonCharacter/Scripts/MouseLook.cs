@@ -37,8 +37,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             /*m_CharacterTargetRot *= Quaternion.Euler (0f, yRot, 0f);
             m_CameraTargetRot *= Quaternion.Euler (-xRot, 0f, 0f);*/
 
-            m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
-            m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
+            m_CharacterTargetRot *= Quaternion.Euler(0f, 0f, 0f);
+
+            Vector3 tempcameulers = camera.eulerAngles;
+            tempcameulers.x += -xRot;
+            tempcameulers.y += yRot;
+            Quaternion m_CameraTargetRot = Quaternion.Euler(tempcameulers.x, tempcameulers.y, tempcameulers.z);
 
             if (clampVerticalRotation)
                 m_CameraTargetRot = ClampRotationAroundXAxis (m_CameraTargetRot);

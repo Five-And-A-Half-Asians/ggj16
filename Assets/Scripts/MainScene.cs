@@ -45,6 +45,7 @@ public class MainScene : MonoBehaviour {
     public Vector3 transitionStart;
 
     public GameObject fader;
+    private int lastColor;
 
     // Use this for initialization
     void Start()
@@ -76,7 +77,8 @@ public class MainScene : MonoBehaviour {
             Destroy(go.gameObject);
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
-		NewRound();
+        lastColor = Random.Range(0, colors.Length - 1);
+        NewRound();
         centerText.text = proceedText;
 		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f), Tween.tweenMode.FADE_IN, 0.6f);
         particleEmitter.GetComponent<TrailRenderer>().Clear();
@@ -99,7 +101,7 @@ public class MainScene : MonoBehaviour {
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = "SCOrE\n" + score;
+        scoreText.text = "SCORE\n" + score;
         roundText.text = "LEVEL\n" + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;
@@ -139,11 +141,14 @@ public class MainScene : MonoBehaviour {
         // Movement
 		PlayerMove();
 
-		// debug distribution
-		//		SpawnRandomKeyPoint (randRange);
+        // debug distribution
+        //		SpawnRandomKeyPoint (randRange);
         // Spawning
-		if (nextKeypointIndex == keypointIDs.Count)
-			NewRound();
+        if (nextKeypointIndex == keypointIDs.Count)
+        {
+            fader.GetComponent<Fader>().SetTween(new Color(115 / 255f, 155 / 255f, 255 / 255f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.5f);
+            NewRound();
+        }
     }
 
 
@@ -173,7 +178,7 @@ public class MainScene : MonoBehaviour {
 		}
 		// volume grows slightly faster than # points
 		randRange += randRangeStep; // code for uniform distr * Mathf.Pow(keypointIDs.Count, 0.4f);
-		Debug.Log("RandRange = " + randRange);
+		//Debug.Log("RandRange = " + randRange);
 		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
@@ -199,6 +204,7 @@ public class MainScene : MonoBehaviour {
 			return false;
 		
         if (keypointIDs[nextKeypointIndex] == go&&!roundTransition) {
+            PlayCollectJingle();
             nextKeypointIndex++;
             score++;
 			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
@@ -208,6 +214,14 @@ public class MainScene : MonoBehaviour {
             GameOver();
             return false;
         }
+    }
+
+    void PlayCollectJingle()
+    {
+        AudioSource pa = player.GetComponent<AudioSource>();
+        //raises pitch by one note, but won't go above one octave
+        pa.pitch = Mathf.Clamp(1f + (Mathf.Pow(Mathf.Pow(1.05946f, 2), nextKeypointIndex) - 1), 1f, 2f);
+        pa.Play();
     }
 
 	void FixedUpdate()
@@ -264,6 +278,9 @@ public class MainScene : MonoBehaviour {
         GameObject obj = (GameObject)Instantiate(collectiblePrefabs[p], loc, new Quaternion(0, 0, 0, 0));
         keypointIDs.Add(obj);
         int c = Random.Range(0, colors.Length);
+        if (c == lastColor)
+            c++;
+        lastColor = c;
         obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
     }
 

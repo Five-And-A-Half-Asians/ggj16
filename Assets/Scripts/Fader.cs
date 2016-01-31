@@ -23,19 +23,22 @@ public class Tween
     }
 }
 
-public class Fader : MonoBehaviour {
+public class Fader : MonoBehaviour
+{
 
     public bool active = false;
     public GameObject solid;
     public Color c;
     public float delta;
     public float initialAlpha;
+    public float amin = 0f;
+    public float amax = 1f;
 
     public void SetTween(Tween t, float delta)
     {
         this.delta = (t.tm.Equals(Tween.tweenMode.FADE_IN)) ? -delta : delta;
         initialAlpha = (t.tm.Equals(Tween.tweenMode.FADE_IN)) ? 1f : 0f;
-        c = (t.tc.Equals(Tween.tweenColor.BLACK))? Color.black : Color.white;
+        c = (t.tc.Equals(Tween.tweenColor.BLACK)) ? Color.black : Color.white;
         solid.GetComponent<Image>().color = new Color(c.r, c.g, c.b, initialAlpha);
         active = true;
     }
@@ -49,26 +52,35 @@ public class Fader : MonoBehaviour {
         active = true;
     }
 
-    public void SetTween(Color c, float initialAlpha, Tween.tweenMode tm, float delta)
+    public void SetTween(Color c, float initialAlpha, float amin, float amax, Tween.tweenMode tm, float delta)
     {
         this.delta = (tm.Equals(Tween.tweenMode.FADE_IN)) ? -delta : delta;
         this.initialAlpha = initialAlpha;
         this.c = c;
         solid.GetComponent<Image>().color = new Color(c.r, c.g, c.b, initialAlpha);
+        this.amin = amin;
+        this.amax = amax;
         active = true;
     }
 
     void Update()
     {
-        if (active)
+        if (!active)
+            return;
+        float nextAlpha = solid.GetComponent<Image>().color.a + delta * Time.deltaTime;
+        if (outOfRange(nextAlpha))
         {
-            float nextAlpha = solid.GetComponent<Image>().color.a + delta * Time.deltaTime;
-            if (nextAlpha < 0f||nextAlpha>1f)
-            {
-                active = false;
-            } else {
-                solid.GetComponent<Image>().color = new Color(c.r, c.g, c.b, nextAlpha);
-            }
+            amin = 0f;
+            amax = 1f;
+            active = false;
         }
+        else {
+            solid.GetComponent<Image>().color = new Color(c.r, c.g, c.b, nextAlpha);
+        }
+    }
+
+    bool outOfRange(float a)
+    {
+        return a < amin || a > amax || a < 0f || a > 1.0f;
     }
 }

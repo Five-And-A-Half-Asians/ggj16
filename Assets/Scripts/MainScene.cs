@@ -9,6 +9,7 @@ public class MainScene : MonoBehaviour {
     public Text scoreText;
     public Text centerText;
     public Text timerText;
+    public Text fuelText;
 
     public float randRange = 2f;
 	public float randRangeStep = 0.5f;
@@ -22,8 +23,9 @@ public class MainScene : MonoBehaviour {
     private int score = 0;
     private bool gameOver;
     private float timeElapsed = 0;
+    private float fuel;
 
-	public GameObject[] collectiblePrefabs;
+    public GameObject[] collectiblePrefabs;
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
                                     //new Color(0f, 196/255f, 196/255f),// new Color(91/255f,216/255f,216/255f)
                                     new Color(0, 217/255f, 108/255f),// new Color(91/255f,230,160),
@@ -44,6 +46,7 @@ public class MainScene : MonoBehaviour {
 	{
 		Time.timeScale = 1;
         timeElapsed = 0;
+        fuel = 30f;
         gameOver = false;
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
@@ -60,6 +63,17 @@ public class MainScene : MonoBehaviour {
         if (!roundTransition)
         {
             timeElapsed += Time.deltaTime;
+            fuel -= Time.deltaTime;
+            if (fuel < 0)
+            {
+                fuel = 0;
+            }
+            fuelText.text = fuel.ToString("#.0000");
+
+            if (fuel == 0)
+            {
+                GameOver();
+            }
 
             if (gameOver)
             {
@@ -139,6 +153,7 @@ public class MainScene : MonoBehaviour {
             nextKeypointIndex++;
             Debug.Log("Found " + nextKeypointIndex + " items.");
             score++;
+            fuel = 30f;
             return true;
         }
         else

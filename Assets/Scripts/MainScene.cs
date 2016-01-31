@@ -205,14 +205,17 @@ public class MainScene : MonoBehaviour {
 
     void GameOver()
     {
-        foreach (GameObject go in keypointIDs)
+        if (!roundTransition)
         {
-            Destroy(go.gameObject);
-        }
-        
-		player.transform.position = new Vector3(0, 0, 0);
-        centerText.text = "GAME OVER \nSCORE: " + score + "\nTAP TO START";
+            foreach (GameObject go in keypointIDs)
+            {
+                Destroy(go.gameObject);
+            }
 
-        gameOver = true;
+            player.transform.position = new Vector3(0, 0, 0);
+            centerText.text = "GAME OVER \nSCORE: " + score + "\nTAP TO START";
+
+            gameOver = true;
+        }
     }
 }

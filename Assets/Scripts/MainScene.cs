@@ -37,9 +37,8 @@ public class MainScene : MonoBehaviour {
                                     new Color(164/255f,64/255f,184/255f) };// new Color(196,132,109),
                                                                            //new Color(108/255f,64/255f,184/255f) };// new Color(160,132,209)};
 
-    public bool roundTransition;
+    public bool roundTransition = false;
     public Vector3 transitionStart;
-
     // Use this for initialization
     void Start()
 	{
@@ -72,19 +71,6 @@ public class MainScene : MonoBehaviour {
             if (Input.GetKeyUp(KeyCode.Escape))
                 GameOver();
 
-            if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
-            {
-                float playerAccel = 0.1f * Mathf.Pow(playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
-                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed + playerAccel);
-            }
-
-            if (playerMoveSpeed > 0)
-            { // don't start moving until tap
-
-                float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed / 2f, 0.6f);
-
-                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed - playerAccel);
-            }
 
             PlayerMove();
 
@@ -197,7 +183,24 @@ public class MainScene : MonoBehaviour {
 
     void PlayerMove()
     {
-        player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
+		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
+			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
+			playerAccel = Mathf.Min (10, playerAccel);
+			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
+		}
+
+		if (playerMoveSpeed > 0f) { // don't start moving until tap
+			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
+			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
+
+		}
+
+		// make it harder to escape
+		if (playerMoveSpeed > 10f) playerMoveSpeed *= 0.95f;
+		if (playerMoveSpeed > 20f) playerMoveSpeed *= 0.90f;
+		playerMoveSpeed = Mathf.Min (100, playerMoveSpeed);
+        
+		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
     }
 
     void GameOver()

@@ -24,6 +24,8 @@ public class MainScene : MonoBehaviour {
     private bool gameRunning;
     private float timeElapsed = 0;
     private float fuel;
+    private float minutes;
+    private float seconds;
 
     public GameObject[] collectiblePrefabs;
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
@@ -53,7 +55,8 @@ public class MainScene : MonoBehaviour {
     void GameOver()
     {
         Debug.Log("gameover top: roundtransition is " + roundTransition);
-        Reset("GAME OVER SCORE: " + score + ". TAP TO START");
+        Reset("GAME OVER\nSCORE: " + score + "\n TIME ELAPSED: " + 
+            string.Format("{0:00}:{1:00}", minutes, seconds) + "\nTAP TO START");
         Debug.Log("gameover bottom: roundtransition is " + roundTransition);
     }
 
@@ -64,7 +67,7 @@ public class MainScene : MonoBehaviour {
         timeElapsed = 0;
         gameRunning = false;
         roundTransition = false;
-        fuel = 30f;
+        fuel = 10f; // starting fuel amount
         player.transform.position = new Vector3(0, 0, 0);
         foreach (GameObject go in keypointIDs)
         {
@@ -95,11 +98,11 @@ public class MainScene : MonoBehaviour {
         if (gameRunning) timeElapsed += Time.deltaTime;
         scoreText.text = score + " collected";
         roundText.text = "Round " + keypointIDs.Count;
-        var minutes = timeElapsed / 60;
-        var seconds = timeElapsed % 60;
+        minutes = timeElapsed / 60;
+        seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;
         //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        //timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         // Handle fuel tickdown
         if (gameRunning)
@@ -109,7 +112,7 @@ public class MainScene : MonoBehaviour {
             {
                 fuel = 0;
             }
-            fuelText.text = fuel.ToString("#.0000");
+            fuelText.text = fuel.ToString("#.00");
             if (fuel == 0)
             {
                 Debug.Log("out of fuel");
@@ -194,7 +197,14 @@ public class MainScene : MonoBehaviour {
         //player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
 		playerMoveSpeed = 0f;
-        centerText.text = "Tap to Continue";
+        if (keypointIDs.Count > 3)
+        {
+            centerText.text = "Good job!";
+        }
+        else
+        {
+            centerText.text = "Tap to Continue";
+        }
     }
 
     public bool CheckKeyPointCollision(GameObject go)
@@ -205,7 +215,7 @@ public class MainScene : MonoBehaviour {
             nextKeypointIndex++;
             Debug.Log("Found " + nextKeypointIndex + " items.");
             score++;
-            fuel = 30f;
+            fuel = fuel + (nextKeypointIndex+1)*1.5f; // increase fuel when object picked up
             return true;
         }
         else

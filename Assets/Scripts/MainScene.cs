@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
     public GameObject player;
+    public GameObject particleEmitter;
     public Text roundText;
     public Text scoreText;
     public Text centerText;
@@ -79,6 +80,8 @@ public class MainScene : MonoBehaviour {
 		NewRound();
         centerText.text = proceedText;
 		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f), Tween.tweenMode.FADE_IN, 0.6f);
+        particleEmitter.GetComponent<TrailRenderer>().Clear();
+        particleEmitter.GetComponent<TrailRenderer>().enabled = true;
     }
 
     // Update is called once per frame
@@ -215,6 +218,7 @@ public class MainScene : MonoBehaviour {
 		{
             if (player.transform.position.magnitude != 0)
             {
+                particleEmitter.GetComponent<TrailRenderer>().enabled = false;
                 player.transform.position *= (1f - (1.5f * Time.deltaTime) / (player.transform.position.magnitude));
                 player.transform.position *= 1f - 1.5f * Time.deltaTime;
             }
@@ -225,7 +229,9 @@ public class MainScene : MonoBehaviour {
 				player.GetComponent<Rigidbody>().velocity = Vector3.zero;
 				playerMoveSpeed = 0f;
 				roundTransition = false;
-			}
+                particleEmitter.GetComponent<TrailRenderer>().Clear();
+                particleEmitter.GetComponent<TrailRenderer>().enabled = true;
+            }
 		}
 	}
 

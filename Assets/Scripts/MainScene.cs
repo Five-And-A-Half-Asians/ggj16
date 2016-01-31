@@ -11,7 +11,7 @@ public class MainScene : MonoBehaviour {
     public Text timerText;
     public Text fuelText;
 
-    public float randRange = 1f;
+    public float randRange = 0.5f;
 	public float randRangeStep = 0.1f;
     
 	public float playerMoveSpeed = 0f;
@@ -100,16 +100,11 @@ public class MainScene : MonoBehaviour {
         // Handle fuel tickdown
         if (gameRunning)
         {
-            fuel -= Time.deltaTime;
-            if (fuel < 0)
-            {
-                fuel = 0;
-            }
+			fuel = Mathf.Max(0, fuel - Time.deltaTime);
             fuelText.text = fuel.ToString("#.00");
-            if (fuel == 0)
-            {
+            
+			if (fuel == 0)
                 GameOver();
-            }
         }
 
         // HUD prompt for acceleration at start of game
@@ -157,27 +152,30 @@ public class MainScene : MonoBehaviour {
                     break;
                 case 1:
                     Vector3 newPos = keypointIDs[0].transform.position;
-                    newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(1.5f, randRange / 2);
+					newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(randRange / 3, randRange / 2);
                     newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
                     newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
 
                     SpawnKeyPoint(newPos);
                     break;
                 case 2:
-                    SpawnKeyPoint(RandomPoint(randRange * 0.5f));
+                    SpawnKeyPoint(RandomPoint(randRange / 2));
                     break;
                 default:
                     SpawnRandomKeyPoint(randRange);
                     break;
             }
-            randRange += randRangeStep;
+			// volume grows slightly faster than # points
+			randRange += randRangeStep * Mathf.Pow(keypointIDs.Count, 0.4f);
+
             NewRound();
         }
     }
 
     void NewRound()
     {
-        roundTransition = true;
+		fuel += 10f;
+		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
         {
@@ -203,7 +201,7 @@ public class MainScene : MonoBehaviour {
 
             nextKeypointIndex++;
             score++;
-            fuel = fuel + (nextKeypointIndex+1)*1.5f; // increase fuel when object picked up
+            fuel += (nextKeypointIndex)*1.5f; // increase fuel when object picked up
             return true;
         }
         else
@@ -240,7 +238,7 @@ public class MainScene : MonoBehaviour {
 			point = RandomPoint(range);
 			invalidPoint = false;
 			foreach (GameObject go in keypointIDs) {
-				if (Vector3.Distance(go.transform.position, point) < 3f) {
+				if (Vector3.Distance(go.transform.position, point) < 0.4f) {
 					invalidPoint = true;
 					break;
 				}
@@ -270,7 +268,7 @@ public class MainScene : MonoBehaviour {
     void PlayerMove()
     {
 		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
-			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
+			float playerAccel = 0.15f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.015f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerAccel = Mathf.Min (10, playerAccel);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
 			Debug.Log ("playerAccel = " + playerAccel);

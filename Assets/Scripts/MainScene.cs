@@ -37,6 +37,9 @@ public class MainScene : MonoBehaviour {
                                     new Color(164/255f,64/255f,184/255f) };// new Color(196,132,109),
     //new Color(108/255f,64/255f,184/255f) };// new Color(160,132,209)};
 
+    public bool roundTransition = false;
+    public Vector3 transitionStart;
+    
     // Use this for initialization
     void Start()
 	{
@@ -54,68 +57,77 @@ public class MainScene : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        timeElapsed += Time.deltaTime;
-
-        if (gameOver) {
-			if (Input.GetMouseButton (0) || Input.GetButton ("Fire1"))
-				Start ();
-			else
-				return;
-		}
-
-        if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
+        if (!roundTransition)
         {
-            playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
-            if (timeElapsed < 5)
+            timeElapsed += Time.deltaTime;
+
+            if (gameOver)
             {
-                centerText.text = "Hold to accelerate";
+                if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
+                    Start();
+                else
+                    return;
             }
-            else
+
+            if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
             {
-                centerText.text = "";
+                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
+                if (timeElapsed < 5)
+                {
+                    centerText.text = "Hold to accelerate";
+                }
+                else
+                {
+                    centerText.text = "";
+                }
             }
+
+            if (playerMoveSpeed > 0)
+                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 0.999f - 0.01f);
+
+            PlayerMove();
+            if (nextKeypointIndex == keypointIDs.Count)
+            {
+                switch (nextKeypointIndex)
+                {
+                    case 0:
+                        SpawnKeyPoint(new Vector3(0, 0, 10));
+                        break;
+                    case 1:
+                        float randX = Random.Range(0, randRange / 2);
+                        float randY = Random.Range(0, randRange / 2);
+                        SpawnKeyPoint(new Vector3(randX, randY, randRange));
+                        break;
+                    default:
+                        SpawnKeyPoint(RandomPoint(randRange));
+                        break;
+                }
+                randRange += randRangeStep;
+                NewRound();
+            }
+
+            // Update HUD
+            scoreText.text = score + " collected";
+            roundText.text = "Round " + keypointIDs.Count;
+            var minutes = timeElapsed / 60;
+            var seconds = timeElapsed % 60;
+            //var fraction = (timeElapsed * 100) % 100;
+            //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
-
-		if (playerMoveSpeed > 0) 
-			playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 0.999f - 0.01f);
-
-		PlayerMove();
-		if (nextKeypointIndex == keypointIDs.Count)
-		{
-			switch (nextKeypointIndex) {
-			case 0:
-				SpawnKeyPoint (new Vector3 (0, 0, 10));
-				break;
-			case 1:
-				float randX = Random.Range (0, randRange/2);
-				float randY = Random.Range (0, randRange/2);
-				SpawnKeyPoint (new Vector3 (randX, randY, randRange));
-				break;
-			default:
-				SpawnKeyPoint (RandomPoint (randRange));
-				break;
-			}
-			randRange += randRangeStep;
-			NewRound();
-		}
-
-        // Update HUD
-        scoreText.text = score + " collected";
-        roundText.text = "Round " + keypointIDs.Count;
-        var minutes = timeElapsed / 60;
-        var seconds = timeElapsed % 60;
-        //var fraction = (timeElapsed * 100) % 100;
-        //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     void NewRound()
     {
+        Debug.Log("start");
+        roundTransition = true;
+        transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
         {
             go.GetComponent<MeshRenderer>().enabled = true;
         }
-        player.transform.position = new Vector3(0, 0, 0);
+        
+        //player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
 		playerMoveSpeed = 0f;
         centerText.text = "Tap to Continue";
@@ -123,7 +135,7 @@ public class MainScene : MonoBehaviour {
 
     public bool CheckKeyPointCollision(GameObject go)
     {
-        if (keypointIDs[nextKeypointIndex] == go)
+        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition)
         {
 
             nextKeypointIndex++;
@@ -136,6 +148,20 @@ public class MainScene : MonoBehaviour {
             //game over
             GameOver();
             return false;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (roundTransition && player.transform.position != Vector3.zero)
+        {
+            player.transform.position -= transitionStart * Time.deltaTime;
+            if (player.transform.position.magnitude<= 0.5f)
+            {
+                player.transform.position = Vector3.zero;
+                player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                roundTransition = false;
+            }
         }
     }
 		

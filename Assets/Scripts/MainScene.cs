@@ -52,8 +52,7 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-        if (!roundTransition)
-            Reset("GAME OVER SCORE: " + score + ". TAP TO START");
+		Reset("GAME OVER SCORE: " + score + ". TAP TO START");
     }
 
     // clean up the game
@@ -69,7 +68,6 @@ public class MainScene : MonoBehaviour {
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
         nextKeypointIndex = 0;
-        SpawnKeyPoint(new Vector3(0, 0, 10));
         score = 0;
         playerMoveSpeed = 0f;
         centerText.text = proceedText;
@@ -81,6 +79,7 @@ public class MainScene : MonoBehaviour {
         // don't update during round transitions
         if (roundTransition) return;
 
+		Debug.Log (Input.GetMouseButton (0) || Input.GetButton ("Fire1"));
         // Update HUD time
         if (gameRunning) timeElapsed += Time.deltaTime;
         scoreText.text = score + " collected";
@@ -137,17 +136,14 @@ public class MainScene : MonoBehaviour {
 
             switch (nextKeypointIndex)
             {
-                case 0:
-                    SpawnKeyPoint(new Vector3(0, 0, 10));
-                    break;
+			case 0:
+					SpawnKeyPoint (Vector3.Normalize (Camera.main.transform.forward) * 10f);                
+					break;
                 case 1:
-                    SpawnKeyPoint(new Vector3(randX, randY, randRange));
+					SpawnKeyPoint(keypointIDs[0].transform.position + RandomPoint(randRange/2f));
                     break;
                 case 2:
-                    SpawnKeyPoint(new Vector3(randX, randY, randRange));
-                    break;
-                case 3:
-                    SpawnKeyPoint(new Vector3(randX, randY, randRange));
+					SpawnKeyPoint(RandomPoint(randRange * 0.6f));
                     break;
                 default:
                     SpawnRandomKeyPoint(randRange);
@@ -191,19 +187,22 @@ public class MainScene : MonoBehaviour {
         }
     }
 
-    void FixedUpdate()
-    {
-        if (roundTransition && player.transform.position != Vector3.zero)
-        {
-            player.transform.position -= transitionStart * Time.deltaTime;
-            if (player.transform.position.magnitude <= 0.5f)
-            {
-                player.transform.position = Vector3.zero;
-                player.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                roundTransition = false;
-            }
-        }
-    }
+	void FixedUpdate()
+	{
+		if (roundTransition && player.transform.position != Vector3.zero)
+		{
+			player.transform.position *= (1f - (1.5f * Time.deltaTime) / player.transform.position.magnitude);
+			player.transform.position *= 1f - 1.5f * Time.deltaTime;
+
+			if (player.transform.position.magnitude <= 0.05f)
+			{
+				player.transform.position = Vector3.zero;
+				player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				roundTransition = false;
+			}
+		}
+	}
+
 	void SpawnRandomKeyPoint(float range) {
 		bool invalidPoint;
 		Vector3 point;

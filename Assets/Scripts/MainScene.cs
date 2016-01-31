@@ -81,6 +81,13 @@ public class MainScene : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        // Listen for esc to quit
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Debug.Log("escape pressed");
+            Reset("Tap to Start");
+        }
+
         // don't update during round transitions
         if (roundTransition)
         {
@@ -130,14 +137,7 @@ public class MainScene : MonoBehaviour {
             {
                 return;
             }
-		}
-
-        // Listen for esc to quit
-        if (Input.GetKeyUp(KeyCode.Escape))
-        {
-			GameOver();
-        }
-            
+		}            
 
         // Movement
 		PlayerMove();

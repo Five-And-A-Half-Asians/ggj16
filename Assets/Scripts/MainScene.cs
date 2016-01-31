@@ -11,8 +11,8 @@ public class MainScene : MonoBehaviour {
     public Text timerText;
     public Text fuelText;
 
-    public float randRange = 2f;
-	public float randRangeStep = 0.5f;
+    public float randRange = 1f;
+	public float randRangeStep = 0.1f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -54,16 +54,13 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-        Debug.Log("gameover top: roundtransition is " + roundTransition);
         Reset("GAME OVER\nSCORE: " + score + "\n TIME ELAPSED: " + 
             string.Format("{0:00}:{1:00}", minutes, seconds) + "\nTAP TO START");
-        Debug.Log("gameover bottom: roundtransition is " + roundTransition);
     }
 
     // clean up the game
     void Reset(string proceedText)
     {
-        Debug.Log("reset top: roundtransition is " + roundTransition);
         timeElapsed = 0;
         gameRunning = false;
         roundTransition = false;
@@ -79,7 +76,6 @@ public class MainScene : MonoBehaviour {
         score = 0;
         playerMoveSpeed = 0f;
         centerText.text = proceedText;
-        Debug.Log("reset bottom: roundtransition is " + roundTransition);
     }
 
     // Update is called once per frame
@@ -88,12 +84,9 @@ public class MainScene : MonoBehaviour {
         // don't update during round transitions
         if (roundTransition)
         {
-            Debug.Log("roundTransition update check: roundtransition is " + roundTransition);
-            Debug.Log("skipping update loop since we're in round transition");
             return;
         }
 
-        if (Input.GetMouseButton(0) || Input.GetButton("Fire1")) Debug.Log("BUTTON PRESSED"); // DEBUG
         // Update HUD time
         if (gameRunning) timeElapsed += Time.deltaTime;
         scoreText.text = score + " collected";
@@ -115,7 +108,6 @@ public class MainScene : MonoBehaviour {
             fuelText.text = fuel.ToString("#.00");
             if (fuel == 0)
             {
-                Debug.Log("out of fuel");
                 GameOver();
             }
         }
@@ -132,7 +124,6 @@ public class MainScene : MonoBehaviour {
         if (!gameRunning) {
             if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
             {
-                Debug.Log("game started due to button press");
                 gameRunning = true;
             }
             else
@@ -144,8 +135,7 @@ public class MainScene : MonoBehaviour {
         // Listen for esc to quit
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            Debug.Log("game ended due to escape");
-            GameOver();
+			GameOver();
         }
             
 
@@ -181,7 +171,6 @@ public class MainScene : MonoBehaviour {
                     break;
             }
             randRange += randRangeStep;
-            Debug.Log("roundTransition is about to be set to true");
             NewRound();
         }
     }
@@ -213,7 +202,6 @@ public class MainScene : MonoBehaviour {
         {
 
             nextKeypointIndex++;
-            Debug.Log("Found " + nextKeypointIndex + " items.");
             score++;
             fuel = fuel + (nextKeypointIndex+1)*1.5f; // increase fuel when object picked up
             return true;
@@ -285,19 +273,22 @@ public class MainScene : MonoBehaviour {
 			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerAccel = Mathf.Min (10, playerAccel);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
+			Debug.Log ("playerAccel = " + playerAccel);
 		}
 
 		if (playerMoveSpeed > 0f) { // don't start moving until tap
 			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
-
+//			Debug.Log ("playerDecel = " + playerAccel);
 		}
 
 		// make it harder to escape
-		if (playerMoveSpeed > 10f) playerMoveSpeed *= 0.95f;
-		if (playerMoveSpeed > 20f) playerMoveSpeed *= 0.90f;
-		playerMoveSpeed = Mathf.Min (100, playerMoveSpeed);
-        
+		if (playerMoveSpeed > 10f) playerMoveSpeed *= 0.99f;
+		if (playerMoveSpeed > 60f) playerMoveSpeed *= 0.99f;
+		if (playerMoveSpeed > 90f) playerMoveSpeed *= 0.90f;
+		playerMoveSpeed = Mathf.Min (1000, playerMoveSpeed);
+		Debug.Log ("playerSpeed = " + playerMoveSpeed);
+
 		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
     }
 }

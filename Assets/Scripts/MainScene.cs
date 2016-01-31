@@ -93,9 +93,9 @@ public class MainScene : MonoBehaviour {
         }
 
         // Update HUD time
-		if (gameRunning && playerMoveSpeed > 0f) timeElapsed += Time.deltaTime;
-        scoreText.text = score + " collected";
-        roundText.text = "Round " + keypointIDs.Count;
+		if (gameRunning) timeElapsed += Time.deltaTime;
+        scoreText.text = "Score: " + score;
+        roundText.text = "Level: " + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;
@@ -103,7 +103,7 @@ public class MainScene : MonoBehaviour {
         //timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         // Handle fuel tickdown
-        if (gameRunning)
+		if (gameRunning && playerMoveSpeed > 0)
         {
 			fuel = Mathf.Max(0, fuel - Time.deltaTime);
             fuelText.text = fuel.ToString("#.00");
@@ -219,6 +219,7 @@ public class MainScene : MonoBehaviour {
 			{
 				player.transform.position = Vector3.zero;
 				player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				playerMoveSpeed = 0f;
 				roundTransition = false;
 			}
 		}

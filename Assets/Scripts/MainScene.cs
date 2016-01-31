@@ -72,7 +72,7 @@ public class MainScene : MonoBehaviour {
 		randRange = 20f;
         gameRunning = false;
         roundTransition = false;
-        fuel = 100000000000f;
+        fuel = 10f;
         player.transform.position = new Vector3(0, 0, 0);
         foreach (GameObject go in keypointIDs)
         {
@@ -147,7 +147,7 @@ public class MainScene : MonoBehaviour {
         // Spawning
         if (nextKeypointIndex == keypointIDs.Count)
         {
-            fader.GetComponent<Fader>().SetTween(new Color(115 / 255f, 155 / 255f, 80 / 255f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.5f);
+            fader.GetComponent<Fader>().SetTween(new Color(0.8f, 0.8f, 0.8f, 0.3f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.3f);
             NewRound();
         }
     }
@@ -210,6 +210,7 @@ public class MainScene : MonoBehaviour {
             nextKeypointIndex++;
             score++;
 			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
+			fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f, 0.05f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.8f);
 			return true;
         } else {
             //game over

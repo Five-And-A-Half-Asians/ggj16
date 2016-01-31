@@ -93,7 +93,6 @@ public class MainScene : MonoBehaviour {
         keypointIDs = new List<GameObject>(); // needed to clear the list
         NewRound();
         centerText.text = proceedText;
-		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f, 100/255f), Tween.tweenMode.FADE_IN, 0.6f);
         particleEmitter.GetComponent<TrailRenderer>().Clear();
         particleEmitter.GetComponent<TrailRenderer>().enabled = true;
     }
@@ -157,10 +156,7 @@ public class MainScene : MonoBehaviour {
 //        SpawnRandomKeyPoint (randRange);
         // Spawning
         if (nextKeypointIndex == keypointIDs.Count)
-        {
-            fader.GetComponent<Fader>().SetTween(new Color(0.8f, 0.8f, 0.8f, 0.3f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.3f);
             NewRound();
-        }
     }
 
 
@@ -168,9 +164,12 @@ public class MainScene : MonoBehaviour {
     {
 		fuel += 0f;
 		nextKeypointIndex = 0;
+		fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f), 0.07f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.05f);
+
 		switch (keypointIDs.Count)
 		{
 		case 0:
+			fader.GetComponent<Fader>().SetTween(new Color(0f, 0f, 0f), 1f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.6f);
 			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
 //			SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);
 			break;
@@ -221,7 +220,7 @@ public class MainScene : MonoBehaviour {
             nextKeypointIndex++;
             score++;
 			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
-			fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f, 0.05f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.8f);
+			fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f), 0.03f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.02f);
 			return true;
         } else {
             //game over

@@ -44,7 +44,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             //myChild.transform.localRotation = m_Camera.transform.localRotation;
 
             // move the character in the facing direction
-            transform.position = transform.position + (m_Camera.transform.forward * m_MoveSpeed);
+            //transform.position = transform.position + (m_Camera.transform.forward * m_MoveSpeed);
         }
     }
 }

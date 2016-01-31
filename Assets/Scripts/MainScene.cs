@@ -137,7 +137,7 @@ public class MainScene : MonoBehaviour {
 					break;
 			case 1:
 				Vector3 newPos = keypointIDs [0].transform.position;
-				newPos += Vector3.Normalize (Camera.main.transform.forward) * Random.Range (1.5, randRange / 2);
+				newPos += Vector3.Normalize (Camera.main.transform.forward) * Random.Range (1.5f, randRange / 2);
 				newPos += Vector3.Normalize (Camera.main.transform.up) * Random.Range(-randRange/2, randRange / 2);
 				newPos += Vector3.Normalize (Camera.main.transform.right) * Random.Range(-randRange/2, randRange / 2);
 

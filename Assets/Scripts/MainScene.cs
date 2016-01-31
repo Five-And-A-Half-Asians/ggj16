@@ -11,8 +11,8 @@ public class MainScene : MonoBehaviour {
     public Text timerText;
     public Text fuelText;
 
-    public float randRange = 0.5f;
-	public float randRangeStep = 0.1f;
+    public float randRange = 0.4f;
+	public float randRangeStep = 0.05f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -94,8 +94,8 @@ public class MainScene : MonoBehaviour {
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = "Score: " + score;
-        roundText.text = "Level: " + keypointIDs.Count;
+        scoreText.text = "SCORE " + score;
+        roundText.text = "LEVEL " + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;

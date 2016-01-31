@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class MainScene : MonoBehaviour {
     public GameObject player;
     public GameObject particleEmitter;
+    public ParticleSystem accelEmitter;
+    public ParticleSystem celebratoryEmitter;
     public Text roundText;
     public Text scoreText;
     public Text centerText;
-    public Text timerText;
     public Text fuelText;
 
 	public float randRange = 5f; // real value set in Reset()
@@ -46,6 +47,7 @@ public class MainScene : MonoBehaviour {
     public Vector3 transitionStart;
 
     public GameObject fader;
+    private int? lastColor = null;
 
     // Use this for initialization
     void Start()
@@ -58,7 +60,7 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-        Reset("Game over\nscore: " + score + "\n time elapsed: " + 
+        Reset("Game over\nscore: " + score + "\n time: " + 
             string.Format("{0:00}:{1:00}", minutes, seconds) + "\ntap to start");
     }
 
@@ -77,7 +79,7 @@ public class MainScene : MonoBehaviour {
             Destroy(go.gameObject);
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
-		NewRound();
+        NewRound();
         centerText.text = proceedText;
 		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f), Tween.tweenMode.FADE_IN, 0.6f);
         particleEmitter.GetComponent<TrailRenderer>().Clear();
@@ -88,7 +90,7 @@ public class MainScene : MonoBehaviour {
     void Update()
     {
         // Listen for esc to quit
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Input.GetKeyUp(KeyCode.Escape) || Input.GetButton("Cancel"))
         {
             Debug.Log("escape pressed");
             Reset("Tap to Start");
@@ -100,13 +102,12 @@ public class MainScene : MonoBehaviour {
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = "SCOrE " + score;
-        roundText.text = "LEVEL " + keypointIDs.Count;
+        scoreText.text = "SCORE\n" + score;
+        roundText.text = "LEVEL\n" + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;
         //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
-        //timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         // Handle fuel tickdown
 		if (gameRunning && playerMoveSpeed > 0)
@@ -141,11 +142,14 @@ public class MainScene : MonoBehaviour {
         // Movement
 		PlayerMove();
 
-		// debug distribution
-		//		SpawnRandomKeyPoint (randRange);
+        // debug distribution
+        //		SpawnRandomKeyPoint (randRange);
         // Spawning
-		if (nextKeypointIndex == keypointIDs.Count)
-			NewRound();
+        if (nextKeypointIndex == keypointIDs.Count)
+        {
+            fader.GetComponent<Fader>().SetTween(new Color(115 / 255f, 155 / 255f, 255 / 255f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.5f);
+            NewRound();
+        }
     }
 
 
@@ -175,7 +179,7 @@ public class MainScene : MonoBehaviour {
 		}
 		// volume grows slightly faster than # points
 		randRange += randRangeStep; // code for uniform distr * Mathf.Pow(keypointIDs.Count, 0.4f);
-		Debug.Log("RandRange = " + randRange);
+		//Debug.Log("RandRange = " + randRange);
 		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
@@ -201,6 +205,7 @@ public class MainScene : MonoBehaviour {
 			return false;
 		
         if (keypointIDs[nextKeypointIndex] == go&&!roundTransition) {
+            PlayCollectJingle();
             nextKeypointIndex++;
             score++;
 			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
@@ -212,10 +217,19 @@ public class MainScene : MonoBehaviour {
         }
     }
 
+    void PlayCollectJingle()
+    {
+        AudioSource pa = player.GetComponent<AudioSource>();
+        //raises pitch by one note, but won't go above one octave
+        pa.pitch = Mathf.Clamp(1f + (Mathf.Pow(Mathf.Pow(1.05946f, 2), nextKeypointIndex) - 1), 1f, 2f);
+        pa.Play();
+    }
+
 	void FixedUpdate()
 	{
 	    if (roundTransition)
 		{
+            celebratoryEmitter.Emit(1);
             if (player.transform.position.magnitude != 0)
             {
                 particleEmitter.GetComponent<TrailRenderer>().enabled = false;
@@ -232,7 +246,10 @@ public class MainScene : MonoBehaviour {
                 particleEmitter.GetComponent<TrailRenderer>().Clear();
                 particleEmitter.GetComponent<TrailRenderer>().enabled = true;
             }
-		}
+		} else
+        {
+            //celebratoryEmitter.Stop();
+        }
 	}
 
 	void SpawnRandomKeyPoint(float range) {
@@ -266,7 +283,17 @@ public class MainScene : MonoBehaviour {
         GameObject obj = (GameObject)Instantiate(collectiblePrefabs[p], loc, new Quaternion(0, 0, 0, 0));
         keypointIDs.Add(obj);
         int c = Random.Range(0, colors.Length);
+        if (lastColor != null)
+        {
+            while (c == lastColor)
+                c = Random.Range(0, colors.Length);
+        }
+        lastColor = c;
         obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
+        float r = Mathf.Clamp(colors[c].r + 0.5f, 0f, 1f);
+        float g = Mathf.Clamp(colors[c].g + 0.5f, 0f, 1f);
+        float b = Mathf.Clamp(colors[c].b + 0.5f, 0f, 1f);
+        obj.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(r,g,b));
     }
 
     void PlayerMove()
@@ -289,5 +316,13 @@ public class MainScene : MonoBehaviour {
 		playerMoveSpeed = Mathf.Min (1000, playerMoveSpeed);
 
 		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
+        if(playerMoveSpeed > 15f || roundTransition)
+        {
+            accelEmitter.startSpeed = playerMoveSpeed;
+            accelEmitter.Play();
+        } else
+        {
+            accelEmitter.Stop();
+        }
     }
 }

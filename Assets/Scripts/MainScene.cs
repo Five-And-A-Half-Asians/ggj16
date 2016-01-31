@@ -23,10 +23,10 @@ public class MainScene : MonoBehaviour {
     public Text centerText;
     public Text fuelText;
 
-	public float randRange = 3f; // real value set in Reset()
-	public float randRangeStep = 0.1f;
+	float randRange = 10f; // real value set in Reset()
+	float randRangeStep = 0.5f;
 
-	public float minDist = 1f;
+	float minDist = 3f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -83,7 +83,7 @@ public class MainScene : MonoBehaviour {
     {
 		score = 0;
 		timeElapsed = 0f;
-		randRange = 20f;
+		randRange = 10f;
         gameRunning = false;
         roundTransition = false;
         fuel = 10f;
@@ -125,7 +125,7 @@ public class MainScene : MonoBehaviour {
 		if (gameRunning && playerMoveSpeed > 0)
         {
 			fuel = Mathf.Max(0, fuel - Time.deltaTime);
-            fuelText.text = fuel.ToString("#.00");
+			fuelText.text = (fuel * 3).ToString("#");
             
 			if (fuel == 0)
                 GameOver();
@@ -164,7 +164,7 @@ public class MainScene : MonoBehaviour {
 
     void NewRound()
     {
-		fuel += 0f;
+		fuel += randRangeStep;
 		nextKeypointIndex = 0;
 		fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f), 0.07f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.05f);
 
@@ -172,13 +172,13 @@ public class MainScene : MonoBehaviour {
 		{
 		case 0:
 			fader.GetComponent<Fader>().SetTween(new Color(0f, 0f, 0f), 1f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.6f);
-			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
+			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * randRange);
 			break;
 		case 1:
 			Vector3 newPos = keypointIDs[0].transform.position;
-			newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(randRange / 3, randRange / 2);
-			newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
-			newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
+			newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(0.5f * randRange, randRange);
+			newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange * 0.5f , randRange * 0.5f);
+			newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange * 0.5f, randRange * 0.5f);
 
 			SpawnKeyPoint(newPos);
 			break;
@@ -193,7 +193,6 @@ public class MainScene : MonoBehaviour {
 		}
 		// volume grows slightly faster than # points
 		randRange += randRangeStep; // code for uniform distr * Mathf.Pow(keypointIDs.Count, 0.4f);
-		//Debug.Log("RandRange = " + randRange);
 		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
@@ -222,7 +221,7 @@ public class MainScene : MonoBehaviour {
             PlayCollectJingle();
             nextKeypointIndex++;
             score++;
-			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
+			fuel += 0.4f * (minDist + nextKeypointIndex); // increase fuel when object picked up
 			fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f), 0.03f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.02f);
 			return true;
         } else {
@@ -291,10 +290,12 @@ public class MainScene : MonoBehaviour {
     Vector3 RandomPoint(float range)
     {
         range = Mathf.Abs(range);
-        float x = Random.Range(-range, range);
+        
+		float x = Random.Range(-range, range);
         float y = Random.Range(-range, range);
         float z = Random.Range(-range, range);
-        return new Vector3(x, y, z);
+
+		return new Vector3(x, y, z);
     }
 
     void SpawnKeyPoint(Vector3 loc)

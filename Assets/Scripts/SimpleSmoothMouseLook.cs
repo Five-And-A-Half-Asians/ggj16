@@ -9,7 +9,7 @@ public class SimpleSmoothMouseLook : MonoBehaviour
 {
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        private bool vrmode = true;
+    private bool vrmode = true;
 #else
     private bool vrmode = false;
 #endif

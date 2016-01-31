@@ -4,6 +4,16 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class MainScene : MonoBehaviour {
+    // with the all-uppercase Elemental End typeface, the capital letters are used to denote stylization when available (notably, A and E look good)
+    private string UI_TAP_TO_START = "tAp to stArt";
+    private string UI_TAP_TO_CONTINUE = "TAp to Continue";
+    private string UI_GAME_OVER = "gAmE ovEr";
+    private string UI_SCORE = "scorE";
+    private string UI_TIME = "timE";
+    private string UI_LEVEL = "lEvEl";
+    private string UI_HOLD_TO_ACCELERATE = "hold to AccElErAtE";
+    private string UI_GOOD_JOB = "good job!";
+
     public GameObject player;
     public GameObject particleEmitter;
     public ParticleSystem accelEmitter;
@@ -54,14 +64,16 @@ public class MainScene : MonoBehaviour {
 	{
 		Time.timeScale = 1;
         keypointIDs = new List<GameObject>();
-        Reset("Tap to Start");
+        Reset(UI_TAP_TO_START);
     }
 
     // called on loss
     void GameOver()
     {
-        Reset("Game over\nscore: " + score + "\n time: " + 
-            string.Format("{0:00}:{1:00}", minutes, seconds) + "\ntap to start");
+        Reset(UI_GAME_OVER + "\n" +
+                UI_SCORE + ": " + score + "\n" +
+                UI_TIME + ": " + string.Format("{0:00}:{1:00}", minutes, seconds) + "\n" +
+                UI_TAP_TO_START);
     }
 
     // clean up the game
@@ -92,8 +104,7 @@ public class MainScene : MonoBehaviour {
         // Listen for esc to quit
         if (Input.GetKeyUp(KeyCode.Escape) || Input.GetButton("Cancel"))
         {
-            Debug.Log("escape pressed");
-            Reset("Tap to Start");
+            Reset(UI_TAP_TO_START);
         }
 
         // don't update during round transitions
@@ -102,8 +113,8 @@ public class MainScene : MonoBehaviour {
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = "SCOrE\n" + score;
-        roundText.text = "LEVEL\n" + keypointIDs.Count;
+        scoreText.text = UI_SCORE + "\n" + score;
+        roundText.text = UI_LEVEL + "\n" + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;
@@ -122,7 +133,7 @@ public class MainScene : MonoBehaviour {
         // HUD prompt for acceleration at start of game
         if (gameRunning) {
             if (timeElapsed < 5f)
-                centerText.text = "Hold to accelerate";
+                centerText.text = UI_HOLD_TO_ACCELERATE;
             else
                 centerText.text = "";
         }
@@ -192,11 +203,11 @@ public class MainScene : MonoBehaviour {
 		playerMoveSpeed = 0f;
         if (keypointIDs.Count > 3)
         {
-            centerText.text = "Good job!";
+            centerText.text = UI_GOOD_JOB;
         }
         else
         {
-            centerText.text = "Tap to Continue";
+            centerText.text = UI_TAP_TO_CONTINUE;
         }
     }
 

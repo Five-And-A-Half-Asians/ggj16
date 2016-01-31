@@ -13,8 +13,10 @@ public class MainScene : MonoBehaviour {
     public Text centerText;
     public Text fuelText;
 
-	public float randRange = 4f; // real value set in Reset()
+	public float randRange = 3f; // real value set in Reset()
 	public float randRangeStep = 0.1f;
+
+	public float minDist = 1f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -91,7 +93,6 @@ public class MainScene : MonoBehaviour {
         // Listen for esc to quit
         if (Input.GetKeyUp(KeyCode.Escape) || Input.GetButton("Cancel"))
         {
-            Debug.Log("escape pressed");
             Reset("Tap to Start");
         }
 
@@ -160,7 +161,6 @@ public class MainScene : MonoBehaviour {
 		case 0:
 			fader.GetComponent<Fader>().SetTween(new Color(0f, 0f, 0f), 1f, 0.0f, 1f, Tween.tweenMode.FADE_IN, 0.6f);
 			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
-//			SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);
 			break;
 		case 1:
 			Vector3 newPos = keypointIDs[0].transform.position;
@@ -171,7 +171,9 @@ public class MainScene : MonoBehaviour {
 			SpawnKeyPoint(newPos);
 			break;
 //		case 2:
-//			SpawnKeyPoint(RandomPoint(randRange / 2));
+//			for (int i = 0; i < 10; i++) {
+//				SpawnRandomKeyPoint (randRange);
+//			}
 //			break;
 		default:
 			SpawnRandomKeyPoint(randRange);
@@ -260,9 +262,12 @@ public class MainScene : MonoBehaviour {
 			GameObject lastKeyPoint = keypointIDs[keypointIDs.Count -1];
 			point = lastKeyPoint.transform.position + RandomPoint(range);
 			invalidPoint = false;
-			if (Vector3.Distance(lastKeyPoint.transform.position, point) < 10f)
+			if (Vector3.Distance(lastKeyPoint.transform.position, point) < (minDist + randRange)/2f) {
+				invalidPoint = true;
+				continue;
+			}
 			foreach (GameObject go in keypointIDs) {
-				if (Vector3.Distance(go.transform.position, point) < 5f) {
+				if (Vector3.Distance(go.transform.position, point) < minDist) {
 					invalidPoint = true;
 					break;
 				}

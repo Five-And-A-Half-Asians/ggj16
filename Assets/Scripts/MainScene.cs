@@ -69,7 +69,7 @@ public class MainScene : MonoBehaviour {
 		randRange = 20f;
         gameRunning = false;
         roundTransition = false;
-        fuel = 0f;
+        fuel = 10f;
         player.transform.position = new Vector3(0, 0, 0);
         foreach (GameObject go in keypointIDs)
         {
@@ -148,7 +148,7 @@ public class MainScene : MonoBehaviour {
 
     void NewRound()
     {
-		fuel += 10f;
+		fuel += 0f;
 		nextKeypointIndex = 0;
 		switch (keypointIDs.Count)
 		{
@@ -200,8 +200,8 @@ public class MainScene : MonoBehaviour {
         if (keypointIDs[nextKeypointIndex] == go&&!roundTransition) {
             nextKeypointIndex++;
             score++;
-            fuel += (nextKeypointIndex)*1.5f; // increase fuel when object picked up
-            return true;
+			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
+			return true;
         } else {
             //game over
             GameOver();
@@ -236,7 +236,7 @@ public class MainScene : MonoBehaviour {
 			point = keypointIDs[keypointIDs.Count -1].transform.position + RandomPoint(range/3);
 			invalidPoint = false;
 			foreach (GameObject go in keypointIDs) {
-				if (Vector3.Distance(go.transform.position, point) < 3f) {
+				if (Vector3.Distance(go.transform.position, point) < 5f) {
 					invalidPoint = true;
 					break;
 				}
@@ -266,7 +266,7 @@ public class MainScene : MonoBehaviour {
     void PlayerMove()
     {
 		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
-			float playerAccel = 0.15f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.015f * Mathf.Pow(1.1f, playerMoveSpeed);
+			float playerAccel = 0.2f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.02f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerAccel = Mathf.Min (10, playerAccel);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
 		}

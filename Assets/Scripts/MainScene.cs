@@ -45,7 +45,7 @@ public class MainScene : MonoBehaviour {
     public Vector3 transitionStart;
 
     public GameObject fader;
-    private int lastColor;
+    private int? lastColor = null;
 
     // Use this for initialization
     void Start()
@@ -77,7 +77,6 @@ public class MainScene : MonoBehaviour {
             Destroy(go.gameObject);
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
-        lastColor = Random.Range(0, colors.Length - 1);
         NewRound();
         centerText.text = proceedText;
 		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f), Tween.tweenMode.FADE_IN, 0.6f);
@@ -278,8 +277,11 @@ public class MainScene : MonoBehaviour {
         GameObject obj = (GameObject)Instantiate(collectiblePrefabs[p], loc, new Quaternion(0, 0, 0, 0));
         keypointIDs.Add(obj);
         int c = Random.Range(0, colors.Length);
-        if (c == lastColor)
-            c++;
+        if (lastColor != null)
+        {
+            while (c == lastColor)
+                c = Random.Range(0, colors.Length);
+        }
         lastColor = c;
         obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
     }

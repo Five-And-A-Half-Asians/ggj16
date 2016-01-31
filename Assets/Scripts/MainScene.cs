@@ -72,7 +72,6 @@ public class MainScene : MonoBehaviour {
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
 		NewRound();
-        nextKeypointIndex = 0;
         score = 0;
         playerMoveSpeed = 0f;
         centerText.text = proceedText;
@@ -146,7 +145,8 @@ public class MainScene : MonoBehaviour {
     void NewRound()
     {
 		fuel += 10f;
-		switch (nextKeypointIndex)
+		nextKeypointIndex = 0;
+		switch (keypointIDs.Count)
 		{
 		case 0:
 			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);

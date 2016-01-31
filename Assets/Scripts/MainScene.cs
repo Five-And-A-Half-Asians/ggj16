@@ -108,7 +108,7 @@ public class MainScene : MonoBehaviour {
                         SpawnKeyPoint(new Vector3(randX, randY, randRange));
                         break;
                     default:
-                        SpawnKeyPoint(RandomPoint(randRange));
+                        SpawnRandomKeyPoint(randRange);
                         break;
                 }
                 randRange += randRangeStep;
@@ -177,6 +177,21 @@ public class MainScene : MonoBehaviour {
             }
         }
     }
+	void SpawnRandomKeyPoint(float range) {
+		bool invalidPoint;
+		Vector3 point;
+		do {
+			point = RandomPoint(range);
+			invalidPoint = false;
+			foreach (GameObject go in keypointIDs) {
+				if (Vector3.Distance(go.transform.position, point) < 3f) {
+					invalidPoint = true;
+					break;
+				}
+			}						
+		} while (invalidPoint);
+		SpawnKeyPoint (point);
+	}
 
     Vector3 RandomPoint(float range)
     {

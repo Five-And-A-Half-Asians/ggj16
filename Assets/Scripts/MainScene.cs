@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class MainScene : MonoBehaviour {
     public GameObject player;
     public GameObject particleEmitter;
+    public ParticleSystem accelEmitter;
+    public ParticleSystem celebratoryEmitter;
     public Text roundText;
     public Text scoreText;
     public Text centerText;
@@ -227,6 +229,7 @@ public class MainScene : MonoBehaviour {
 	{
 	    if (roundTransition)
 		{
+            celebratoryEmitter.Emit(1);
             if (player.transform.position.magnitude != 0)
             {
                 particleEmitter.GetComponent<TrailRenderer>().enabled = false;
@@ -243,7 +246,10 @@ public class MainScene : MonoBehaviour {
                 particleEmitter.GetComponent<TrailRenderer>().Clear();
                 particleEmitter.GetComponent<TrailRenderer>().enabled = true;
             }
-		}
+		} else
+        {
+            //celebratoryEmitter.Stop();
+        }
 	}
 
 	void SpawnRandomKeyPoint(float range) {
@@ -284,6 +290,10 @@ public class MainScene : MonoBehaviour {
         }
         lastColor = c;
         obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
+        float r = Mathf.Clamp(colors[c].r + 0.5f, 0f, 1f);
+        float g = Mathf.Clamp(colors[c].g + 0.5f, 0f, 1f);
+        float b = Mathf.Clamp(colors[c].b + 0.5f, 0f, 1f);
+        obj.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(r,g,b));
     }
 
     void PlayerMove()
@@ -306,5 +316,13 @@ public class MainScene : MonoBehaviour {
 		playerMoveSpeed = Mathf.Min (1000, playerMoveSpeed);
 
 		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
+        if(playerMoveSpeed > 15f || roundTransition)
+        {
+            accelEmitter.startSpeed = playerMoveSpeed;
+            accelEmitter.Play();
+        } else
+        {
+            accelEmitter.Stop();
+        }
     }
 }

@@ -78,7 +78,7 @@ public class MainScene : MonoBehaviour {
         keypointIDs = new List<GameObject>(); // needed to clear the list
 		NewRound();
         centerText.text = proceedText;
-        fader.GetComponent<Fader>().SetTween(new Color(150 / 255f, 200 / 255f, 200 / 255f), Tween.tweenMode.FADE_IN, 0.4f);
+		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f), Tween.tweenMode.FADE_IN, 0.6f);
     }
 
     // Update is called once per frame

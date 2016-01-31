@@ -20,7 +20,7 @@ public class MainScene : MonoBehaviour {
 
 
     private int score = 0;
-    private bool gameOver;
+    private bool gameRunning;
     private float timeElapsed = 0;
 
 	public GameObject[] collectiblePrefabs;
@@ -41,45 +41,78 @@ public class MainScene : MonoBehaviour {
     void Start()
 	{
 		Time.timeScale = 1;
-        timeElapsed = 0;
-        gameOver = false;
-        player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
+        Reset("Tap to Start");
+    }
+
+    // called on loss
+    void GameOver()
+    {
+        Reset("GAME OVER SCORE: " + score + ". TAP TO START");
+    }
+
+    // clean up the game
+    void Reset(string proceedText)
+    {
+        timeElapsed = 0;
+        gameRunning = false;
+        player.transform.position = new Vector3(0, 0, 0);
+        foreach (GameObject go in keypointIDs)
+        {
+            Destroy(go.gameObject);
+        }
         nextKeypointIndex = 0;
         SpawnKeyPoint(new Vector3(0, 0, 10));
         score = 0;
-		playerMoveSpeed = 0f;
-        centerText.text = "Tap to Start";
+        playerMoveSpeed = 0f;
+        centerText.text = proceedText;
     }
 
     // Update is called once per frame
     void Update()
     {
-        timeElapsed += Time.deltaTime;
+        // Update HUD time
+        if (gameRunning) timeElapsed += Time.deltaTime;
+        scoreText.text = score + " collected";
+        roundText.text = "Round " + keypointIDs.Count;
+        var minutes = timeElapsed / 60;
+        var seconds = timeElapsed % 60;
+        //var fraction = (timeElapsed * 100) % 100;
+        //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
-        if (gameOver) {
-			if (Input.GetMouseButton (0) || Input.GetButton ("Fire1"))
-				Start ();
-			else
-				return;
+        // HUD prompt for acceleration at start of game
+        if (timeElapsed < 5 && gameRunning)
+            centerText.text = "Hold to accelerate";
+        else if (gameRunning)
+            centerText.text = "";
+
+        // Listen for tap to start
+        if (!gameRunning) {
+            if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
+                gameRunning = true;
+            else
+                return;
 		}
+
+        // Listen for esc to quit
         if (Input.GetKeyUp(KeyCode.Escape))
             GameOver();
 
+        // Movement
 		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
 			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
 		}
 
 		if (playerMoveSpeed > 0) { // don't start moving until tap
-
 			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
-
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
 		}
 
 		PlayerMove();
 
+        // Spawning
 		if (nextKeypointIndex == keypointIDs.Count)
 		{
 			float randX = Random.Range (0, randRange/2);
@@ -105,20 +138,6 @@ public class MainScene : MonoBehaviour {
 			randRange += randRangeStep;
 			NewRound();
 		}
-
-        // Update HUD
-        scoreText.text = score + " collected";
-        roundText.text = "Round " + keypointIDs.Count;
-        var minutes = timeElapsed / 60;
-        var seconds = timeElapsed % 60;
-        //var fraction = (timeElapsed * 100) % 100;
-        //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-
-		if (timeElapsed < 5)
-			centerText.text = "Hold to accelerate";
-		else
-			centerText.text = "";
     }
 
     void NewRound()
@@ -173,18 +192,5 @@ public class MainScene : MonoBehaviour {
     void PlayerMove()
     {
         player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
-    }
-
-    void GameOver()
-    {
-        foreach (GameObject go in keypointIDs)
-        {
-            Destroy(go.gameObject);
-        }
-        
-		player.transform.position = new Vector3(0, 0, 0);
-        centerText.text = "GAME OVER \nSCORE: " + score + "\nTAP TO START";
-
-        gameOver = true;
     }
 }

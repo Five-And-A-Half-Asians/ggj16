@@ -9,7 +9,6 @@ public class MainScene : MonoBehaviour {
     public Text roundText;
     public Text scoreText;
     public Text centerText;
-    public Text timerText;
     public Text fuelText;
 
 	public float randRange = 5f; // real value set in Reset()
@@ -58,7 +57,7 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-        Reset("Game over\nscore: " + score + "\n time elapsed: " + 
+        Reset("Game over\nscore: " + score + "\n time: " + 
             string.Format("{0:00}:{1:00}", minutes, seconds) + "\ntap to start");
     }
 
@@ -88,7 +87,7 @@ public class MainScene : MonoBehaviour {
     void Update()
     {
         // Listen for esc to quit
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Input.GetKeyUp(KeyCode.Escape) || Input.GetButton("Cancel"))
         {
             Debug.Log("escape pressed");
             Reset("Tap to Start");
@@ -106,7 +105,6 @@ public class MainScene : MonoBehaviour {
         seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;
         //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
-        //timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         // Handle fuel tickdown
 		if (gameRunning && playerMoveSpeed > 0)

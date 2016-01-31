@@ -52,14 +52,18 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-		Reset("GAME OVER SCORE: " + score + ". TAP TO START");
+        Debug.Log("gameover top: roundtransition is " + roundTransition);
+        Reset("GAME OVER SCORE: " + score + ". TAP TO START");
+        Debug.Log("gameover bottom: roundtransition is " + roundTransition);
     }
 
     // clean up the game
     void Reset(string proceedText)
     {
+        Debug.Log("reset top: roundtransition is " + roundTransition);
         timeElapsed = 0;
         gameRunning = false;
+        roundTransition = false;
         fuel = 30f;
         player.transform.position = new Vector3(0, 0, 0);
         foreach (GameObject go in keypointIDs)
@@ -71,15 +75,21 @@ public class MainScene : MonoBehaviour {
         score = 0;
         playerMoveSpeed = 0f;
         centerText.text = proceedText;
+        Debug.Log("reset bottom: roundtransition is " + roundTransition);
     }
 
     // Update is called once per frame
     void Update()
     {
         // don't update during round transitions
-        if (roundTransition) return;
+        if (roundTransition)
+        {
+            Debug.Log("roundTransition update check: roundtransition is " + roundTransition);
+            Debug.Log("skipping update loop since we're in round transition");
+            return;
+        }
 
-		Debug.Log (Input.GetMouseButton (0) || Input.GetButton ("Fire1"));
+        if (Input.GetMouseButton(0) || Input.GetButton("Fire1")) Debug.Log("BUTTON PRESSED"); // DEBUG
         // Update HUD time
         if (gameRunning) timeElapsed += Time.deltaTime;
         scoreText.text = score + " collected";
@@ -101,6 +111,7 @@ public class MainScene : MonoBehaviour {
             fuelText.text = fuel.ToString("#.0000");
             if (fuel == 0)
             {
+                Debug.Log("out of fuel");
                 GameOver();
             }
         }
@@ -116,14 +127,23 @@ public class MainScene : MonoBehaviour {
         // Listen for tap to start
         if (!gameRunning) {
             if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
+            {
+                Debug.Log("game started due to button press");
                 gameRunning = true;
+            }
             else
+            {
                 return;
+            }
 		}
 
         // Listen for esc to quit
         if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Debug.Log("game ended due to escape");
             GameOver();
+        }
+            
 
         // Movement
 		PlayerMove();
@@ -136,7 +156,7 @@ public class MainScene : MonoBehaviour {
 
             switch (nextKeypointIndex)
             {
-			case 0:
+			    case 0:
 					SpawnKeyPoint (Vector3.Normalize (Camera.main.transform.forward) * 10f);                
 					break;
                 case 1:
@@ -150,6 +170,7 @@ public class MainScene : MonoBehaviour {
                     break;
             }
             randRange += randRangeStep;
+            Debug.Log("roundTransition is about to be set to true");
             NewRound();
         }
     }
@@ -189,7 +210,7 @@ public class MainScene : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		if (roundTransition && player.transform.position != Vector3.zero)
+	    if (roundTransition)
 		{
 			player.transform.position *= (1f - (1.5f * Time.deltaTime) / player.transform.position.magnitude);
 			player.transform.position *= 1f - 1.5f * Time.deltaTime;

@@ -11,8 +11,8 @@ public class MainScene : MonoBehaviour {
     public Text timerText;
     public Text fuelText;
 
-    public float randRange = 0.4f;
-	public float randRangeStep = 0.05f;
+	public float randRange = 5f; // real value set in Reset()
+	public float randRangeStep = 1f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -64,8 +64,9 @@ public class MainScene : MonoBehaviour {
     // clean up the game
     void Reset(string proceedText)
     {
-        score = 0;
-		timeElapsed = 0;
+		score = 0;
+		timeElapsed = 0f;
+		randRange = 20f;
         gameRunning = false;
         roundTransition = false;
         fuel = 0f;
@@ -92,9 +93,7 @@ public class MainScene : MonoBehaviour {
 
         // don't update during round transitions
         if (roundTransition)
-        {
             return;
-        }
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
@@ -139,6 +138,8 @@ public class MainScene : MonoBehaviour {
         // Movement
 		PlayerMove();
 
+		// debug distribution
+		//		SpawnRandomKeyPoint (randRange);
         // Spawning
 		if (nextKeypointIndex == keypointIDs.Count)
 			NewRound();
@@ -162,16 +163,16 @@ public class MainScene : MonoBehaviour {
 
 			SpawnKeyPoint(newPos);
 			break;
-		case 2:
-			SpawnKeyPoint(RandomPoint(randRange / 2));
-			break;
+//		case 2:
+//			SpawnKeyPoint(RandomPoint(randRange / 2));
+//			break;
 		default:
 			SpawnRandomKeyPoint(randRange);
 			break;
 		}
 		// volume grows slightly faster than # points
-		randRange += randRangeStep * Mathf.Pow(keypointIDs.Count, 0.4f);
-	
+		randRange += randRangeStep; // code for uniform distr * Mathf.Pow(keypointIDs.Count, 0.4f);
+		Debug.Log("RandRange = " + randRange);
 		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
@@ -193,16 +194,15 @@ public class MainScene : MonoBehaviour {
 
     public bool CheckKeyPointCollision(GameObject go)
     {
-        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition)
-        {
-
+		if (roundTransition)
+			return false;
+		
+        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition) {
             nextKeypointIndex++;
             score++;
             fuel += (nextKeypointIndex)*1.5f; // increase fuel when object picked up
             return true;
-        }
-        else
-        {
+        } else {
             //game over
             GameOver();
             return false;
@@ -233,10 +233,10 @@ public class MainScene : MonoBehaviour {
 		bool invalidPoint;
 		Vector3 point;
 		do {
-			point = RandomPoint(range);
+			point = keypointIDs[keypointIDs.Count -1].transform.position + RandomPoint(range/3);
 			invalidPoint = false;
 			foreach (GameObject go in keypointIDs) {
-				if (Vector3.Distance(go.transform.position, point) < 0.4f) {
+				if (Vector3.Distance(go.transform.position, point) < 3f) {
 					invalidPoint = true;
 					break;
 				}

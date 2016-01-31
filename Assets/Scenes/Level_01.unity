@@ -2706,6 +2706,7 @@ GameObject:
   - 54: {fileID: 1907988690}
   - 82: {fileID: 1907988689}
   - 135: {fileID: 1907988688}
+  - 96: {fileID: 1907988693}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2852,6 +2853,54 @@ Transform:
   - {fileID: 896368666}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!96 &1907988693
+TrailRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1907988687}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 2100000, guid: ed1b89d39279f564ea077ad8e46f3595, type: 2}
+  - {fileID: 2100000, guid: 89ff19d667a6a5d4bb76df1fcb718402, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Time: 10
+  m_StartWidth: 2
+  m_EndWidth: 2
+  m_Colors:
+    m_Color[0]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[1]:
+      serializedVersion: 2
+      rgba: 4294960429
+    m_Color[2]:
+      serializedVersion: 2
+      rgba: 4294908450
+    m_Color[3]:
+      serializedVersion: 2
+      rgba: 4288876138
+    m_Color[4]:
+      serializedVersion: 2
+      rgba: 16777215
+  m_MinVertexDistance: 0.1
+  m_Autodestruct: 0
 --- !u!1 &1933146238
 GameObject:
   m_ObjectHideFlags: 0

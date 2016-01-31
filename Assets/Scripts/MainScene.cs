@@ -10,8 +10,8 @@ public class MainScene : MonoBehaviour {
     public Text centerText;
     public Text timerText;
 
-    public float randRange = 32f;
-	public float randRangeStep = 4f;
+    public float randRange = 2f;
+	public float randRangeStep = 0.5f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -35,15 +35,16 @@ public class MainScene : MonoBehaviour {
                                     new Color(247/255f,32/255f,32/255f),// new Color(249,111,111),
                                     //new Color(248/255f,0f,148/255f),// new Color(250, 91, 186),
                                     new Color(164/255f,64/255f,184/255f) };// new Color(196,132,109),
-    //new Color(108/255f,64/255f,184/255f) };// new Color(160,132,209)};
+                                                                           //new Color(108/255f,64/255f,184/255f) };// new Color(160,132,209)};
 
-    public bool roundTransition = false;
+    public bool roundTransition;
     public Vector3 transitionStart;
-    
+
     // Use this for initialization
     void Start()
 	{
 		Time.timeScale = 1;
+        timeElapsed = 0;
         gameOver = false;
         player.transform.position = new Vector3(0, 0, 0);
         keypointIDs = new List<GameObject>();
@@ -68,34 +69,42 @@ public class MainScene : MonoBehaviour {
                 else
                     return;
             }
+            if (Input.GetKeyUp(KeyCode.Escape))
+                GameOver();
 
             if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
             {
-                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 1.01f + 0.1f);
-                if (timeElapsed < 5)
-                {
-                    centerText.text = "Hold to accelerate";
-                }
-                else
-                {
-                    centerText.text = "";
-                }
+                float playerAccel = 0.1f * Mathf.Pow(playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
+                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed + playerAccel);
             }
 
             if (playerMoveSpeed > 0)
-                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed * 0.999f - 0.01f);
+            { // don't start moving until tap
+
+                float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed / 2f, 0.6f);
+
+                playerMoveSpeed = Mathf.Max(1f, playerMoveSpeed - playerAccel);
+            }
 
             PlayerMove();
+
             if (nextKeypointIndex == keypointIDs.Count)
             {
+                float randX = Random.Range(0, randRange / 2);
+                float randY = Random.Range(0, randRange / 2);
+
                 switch (nextKeypointIndex)
                 {
                     case 0:
                         SpawnKeyPoint(new Vector3(0, 0, 10));
                         break;
                     case 1:
-                        float randX = Random.Range(0, randRange / 2);
-                        float randY = Random.Range(0, randRange / 2);
+                        SpawnKeyPoint(new Vector3(randX, randY, randRange));
+                        break;
+                    case 2:
+                        SpawnKeyPoint(new Vector3(randX, randY, randRange));
+                        break;
+                    case 3:
                         SpawnKeyPoint(new Vector3(randX, randY, randRange));
                         break;
                     default:
@@ -114,19 +123,22 @@ public class MainScene : MonoBehaviour {
             //var fraction = (timeElapsed * 100) % 100;
             //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
             timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+            if (timeElapsed < 5)
+                centerText.text = "Hold to accelerate";
+            else
+                centerText.text = "";
         }
     }
 
     void NewRound()
     {
-        Debug.Log("start");
         roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
         {
             go.GetComponent<MeshRenderer>().enabled = true;
         }
-        
         //player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
 		playerMoveSpeed = 0f;
@@ -156,7 +168,7 @@ public class MainScene : MonoBehaviour {
         if (roundTransition && player.transform.position != Vector3.zero)
         {
             player.transform.position -= transitionStart * Time.deltaTime;
-            if (player.transform.position.magnitude<= 0.5f)
+            if (player.transform.position.magnitude <= 0.5f)
             {
                 player.transform.position = Vector3.zero;
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -164,7 +176,6 @@ public class MainScene : MonoBehaviour {
             }
         }
     }
-		
 
     Vector3 RandomPoint(float range)
     {

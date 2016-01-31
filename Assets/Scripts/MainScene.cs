@@ -57,8 +57,8 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-        Reset("GAME OVER\nSCORE: " + score + "\n TIME ELAPSED: " + 
-            string.Format("{0:00}:{1:00}", minutes, seconds) + "\nTAP TO START");
+        Reset("Game over\nscore: " + score + "\n time elapsed: " + 
+            string.Format("{0:00}:{1:00}", minutes, seconds) + "\ntap to start");
     }
 
     // clean up the game
@@ -97,7 +97,7 @@ public class MainScene : MonoBehaviour {
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = "SCORE " + score;
+        scoreText.text = "SCOrE " + score;
         roundText.text = "LEVEL " + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;

@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: 4accd1912a344b64b82537cefcb12d9a
-timeCreated: 1454225269
-=======
-guid: ed1bb23c8a6fe1d4bb9c60be854d9de5
-timeCreated: 1454226366
->>>>>>> 8735b5606ece0b8bbed96f84bf670fcf4d03b6ec
-licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -21,6 +14,7 @@ ModelImporter:
     2300000: Icosphere
     3300000: Icosphere
     4300000: Icosphere
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -45,7 +39,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -79,7 +73,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

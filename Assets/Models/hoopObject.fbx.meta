@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: 9c58eeaae04e1f248ba10d347205f6f6
-timeCreated: 1454225269
-=======
-guid: fb7d71c1470f90b4da194a21aab2066e
-timeCreated: 1454226366
->>>>>>> 8735b5606ece0b8bbed96f84bf670fcf4d03b6ec
-licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -26,6 +19,7 @@ ModelImporter:
     3300002: Torus.001
     4300000: Torus.001
     4300002: Torus
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -50,7 +44,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -84,7 +78,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

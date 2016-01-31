@@ -67,6 +67,7 @@ public class MainScene : MonoBehaviour {
         {
             Destroy(go.gameObject);
         }
+        keypointIDs = new List<GameObject>(); // needed to clear the list
         nextKeypointIndex = 0;
         SpawnKeyPoint(new Vector3(0, 0, 10));
         score = 0;

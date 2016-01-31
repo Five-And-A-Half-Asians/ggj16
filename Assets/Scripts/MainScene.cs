@@ -43,6 +43,9 @@ public class MainScene : MonoBehaviour {
 
     public bool roundTransition = false;
     public Vector3 transitionStart;
+
+    public GameObject fader;
+
     // Use this for initialization
     void Start()
 	{
@@ -61,7 +64,7 @@ public class MainScene : MonoBehaviour {
     // clean up the game
     void Reset(string proceedText)
     {
-		score = 0;
+        score = 0;
 		timeElapsed = 0;
         gameRunning = false;
         roundTransition = false;
@@ -74,6 +77,7 @@ public class MainScene : MonoBehaviour {
         keypointIDs = new List<GameObject>(); // needed to clear the list
 		NewRound();
         centerText.text = proceedText;
+        fader.GetComponent<Fader>().SetTween(new Color(150 / 255f, 200 / 255f, 200 / 255f), Tween.tweenMode.FADE_IN, 0.4f);
     }
 
     // Update is called once per frame

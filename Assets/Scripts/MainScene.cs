@@ -121,44 +121,35 @@ public class MainScene : MonoBehaviour {
             GameOver();
 
         // Movement
-		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
-			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
-			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
-		}
-
-		if (playerMoveSpeed > 0) { // don't start moving until tap
-			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
-			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
-		}
-
 		PlayerMove();
 
         // Spawning
-		if (nextKeypointIndex == keypointIDs.Count)
-		{
-			float randX = Random.Range (0, randRange/2);
-            float randY = Random.Range (0, randRange/2);
+        if (nextKeypointIndex == keypointIDs.Count)
+        {
+            float randX = Random.Range(0, randRange / 2);
+            float randY = Random.Range(0, randRange / 2);
 
-            switch (nextKeypointIndex) {
-			case 0:
-				SpawnKeyPoint (new Vector3 (0, 0, 10));
-				break;
-			case 1:
-				SpawnKeyPoint (new Vector3 (randX, randY, randRange));
-				break;
-            case 2:
-                SpawnKeyPoint (new Vector3 (randX, randY, randRange));
-                break;
-            case 3:
-                SpawnKeyPoint (new Vector3 (randX, randY, randRange));
-                break;
-			default:
-				SpawnKeyPoint (RandomPoint (randRange));
-				break;
-			}
-			randRange += randRangeStep;
-			NewRound();
-		}
+            switch (nextKeypointIndex)
+            {
+                case 0:
+                    SpawnKeyPoint(new Vector3(0, 0, 10));
+                    break;
+                case 1:
+                    SpawnKeyPoint(new Vector3(randX, randY, randRange));
+                    break;
+                case 2:
+                    SpawnKeyPoint(new Vector3(randX, randY, randRange));
+                    break;
+                case 3:
+                    SpawnKeyPoint(new Vector3(randX, randY, randRange));
+                    break;
+                default:
+                    SpawnRandomKeyPoint(randRange);
+                    break;
+            }
+            randRange += randRangeStep;
+            NewRound();
+        }
     }
 
     void NewRound()
@@ -207,6 +198,21 @@ public class MainScene : MonoBehaviour {
             }
         }
     }
+	void SpawnRandomKeyPoint(float range) {
+		bool invalidPoint;
+		Vector3 point;
+		do {
+			point = RandomPoint(range);
+			invalidPoint = false;
+			foreach (GameObject go in keypointIDs) {
+				if (Vector3.Distance(go.transform.position, point) < 3f) {
+					invalidPoint = true;
+					break;
+				}
+			}						
+		} while (invalidPoint);
+		SpawnKeyPoint (point);
+	}
 
     Vector3 RandomPoint(float range)
     {

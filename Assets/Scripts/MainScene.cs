@@ -78,8 +78,8 @@ public class MainScene : MonoBehaviour {
     void Update()
     {
         // don't update during round transitions
-        if (!roundTransition) return;
-        
+        if (roundTransition) return;
+
         // Update HUD time
         if (gameRunning) timeElapsed += Time.deltaTime;
         scoreText.text = score + " collected";
@@ -91,22 +91,27 @@ public class MainScene : MonoBehaviour {
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         // Handle fuel tickdown
-        fuel -= Time.deltaTime;
-        if (fuel < 0)
+        if (gameRunning)
         {
-            fuel = 0;
-        }
-        fuelText.text = fuel.ToString("#.0000");
-        if (fuel == 0)
-        {
-            GameOver();
+            fuel -= Time.deltaTime;
+            if (fuel < 0)
+            {
+                fuel = 0;
+            }
+            fuelText.text = fuel.ToString("#.0000");
+            if (fuel == 0)
+            {
+                GameOver();
+            }
         }
 
         // HUD prompt for acceleration at start of game
-        if (timeElapsed < 5 && gameRunning)
-            centerText.text = "Hold to accelerate";
-        else if (gameRunning)
-            centerText.text = "";
+        if (gameRunning) {
+            if (timeElapsed < 5)
+                centerText.text = "Hold to accelerate";
+            else
+                centerText.text = "";
+        }
 
         // Listen for tap to start
         if (!gameRunning) {

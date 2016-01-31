@@ -71,6 +71,7 @@ public class MainScene : MonoBehaviour {
             Destroy(go.gameObject);
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
+        Spawn();
         nextKeypointIndex = 0;
         score = 0;
         playerMoveSpeed = 0f;
@@ -149,26 +150,32 @@ public class MainScene : MonoBehaviour {
 		PlayerMove();
 
         // Spawning
+        Spawn();
+    }
+
+    void Spawn()
+    {
         if (nextKeypointIndex == keypointIDs.Count)
         {
-            switch (nextKeypointIndex) {
-			case 0:
-				SpawnKeyPoint (Vector3.Normalize (Camera.main.transform.forward) * 10f);                
-				break;
-			case 1:
-				Vector3 newPos = keypointIDs [0].transform.position;
-				newPos += Vector3.Normalize (Camera.main.transform.forward) * Random.Range (1.5f, randRange / 2);
-				newPos += Vector3.Normalize (Camera.main.transform.up) * Random.Range(-randRange/2, randRange / 2);
-				newPos += Vector3.Normalize (Camera.main.transform.right) * Random.Range(-randRange/2, randRange / 2);
+            switch (nextKeypointIndex)
+            {
+                case 0:
+                    SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
+                    break;
+                case 1:
+                    Vector3 newPos = keypointIDs[0].transform.position;
+                    newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(1.5f, randRange / 2);
+                    newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
+                    newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
 
-				SpawnKeyPoint(newPos);
-                break;
-            case 2:
-				SpawnKeyPoint(RandomPoint(randRange * 0.5f));
-                break;
-            default:
-                SpawnRandomKeyPoint(randRange);
-                break;
+                    SpawnKeyPoint(newPos);
+                    break;
+                case 2:
+                    SpawnKeyPoint(RandomPoint(randRange * 0.5f));
+                    break;
+                default:
+                    SpawnRandomKeyPoint(randRange);
+                    break;
             }
             randRange += randRangeStep;
             Debug.Log("roundTransition is about to be set to true");

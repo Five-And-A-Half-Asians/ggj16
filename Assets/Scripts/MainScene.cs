@@ -82,15 +82,22 @@ public class MainScene : MonoBehaviour {
 
 		if (nextKeypointIndex == keypointIDs.Count)
 		{
-			switch (nextKeypointIndex) {
+			float randX = Random.Range (0, randRange/2);
+            float randY = Random.Range (0, randRange/2);
+
+            switch (nextKeypointIndex) {
 			case 0:
 				SpawnKeyPoint (new Vector3 (0, 0, 10));
 				break;
 			case 1:
-				float randX = Random.Range (0, randRange/2);
-				float randY = Random.Range (0, randRange/2);
 				SpawnKeyPoint (new Vector3 (randX, randY, randRange));
 				break;
+            case 2:
+                SpawnKeyPoint (new Vector3 (randX, randY, randRange));
+                break;
+            case 3:
+                SpawnKeyPoint (new Vector3 (randX, randY, randRange));
+                break;
 			default:
 				SpawnKeyPoint (RandomPoint (randRange));
 				break;

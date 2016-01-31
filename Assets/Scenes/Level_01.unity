@@ -2863,7 +2863,6 @@ TrailRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: ed1b89d39279f564ea077ad8e46f3595, type: 2}
   - {fileID: 2100000, guid: 89ff19d667a6a5d4bb76df1fcb718402, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
@@ -2881,8 +2880,8 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Time: 10
-  m_StartWidth: 2
-  m_EndWidth: 2
+  m_StartWidth: 0.5
+  m_EndWidth: 0.5
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
@@ -2892,13 +2891,13 @@ TrailRenderer:
       rgba: 4294960429
     m_Color[2]:
       serializedVersion: 2
-      rgba: 4294908450
+      rgba: 4290408227
     m_Color[3]:
       serializedVersion: 2
-      rgba: 4288876138
+      rgba: 3231914766
     m_Color[4]:
       serializedVersion: 2
-      rgba: 16777215
+      rgba: 2137199172
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
 --- !u!1 &1933146238

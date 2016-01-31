@@ -1830,8 +1830,6 @@ MonoBehaviour:
   collectiblePrefabs:
   - {fileID: 122070, guid: 07fac52fc09407347839ca923b47abd3, type: 2}
   - {fileID: 126758, guid: 0f42fc8af498e7d4a8757e130a1168e8, type: 2}
-  - {fileID: 178426, guid: f985a473215f79f4084c85aacdaffaaf, type: 2}
-  - {fileID: 0}
   roundTransition: 0
   transitionStart: {x: 0, y: 0, z: 0}
   fader: {fileID: 1958653337}

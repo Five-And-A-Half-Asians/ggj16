@@ -220,8 +220,11 @@ public class MainScene : MonoBehaviour {
 	{
 	    if (roundTransition)
 		{
-			player.transform.position *= (1f - (1.5f * Time.deltaTime) / player.transform.position.magnitude);
-			player.transform.position *= 1f - 1.5f * Time.deltaTime;
+            if (player.transform.position.magnitude != 0)
+            {
+                player.transform.position *= (1f - (1.5f * Time.deltaTime) / (player.transform.position.magnitude));
+                player.transform.position *= 1f - 1.5f * Time.deltaTime;
+            }
 
 			if (player.transform.position.magnitude <= 0.05f)
 			{

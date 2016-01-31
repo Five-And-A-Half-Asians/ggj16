@@ -71,7 +71,7 @@ public class MainScene : MonoBehaviour {
             Destroy(go.gameObject);
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
-        Spawn();
+		NewRound();
         nextKeypointIndex = 0;
         score = 0;
         playerMoveSpeed = 0f;
@@ -138,43 +138,37 @@ public class MainScene : MonoBehaviour {
 		PlayerMove();
 
         // Spawning
-        Spawn();
+		if (nextKeypointIndex == keypointIDs.Count)
+			NewRound();
     }
 
-    void Spawn()
-    {
-        if (nextKeypointIndex == keypointIDs.Count)
-        {
-            switch (nextKeypointIndex)
-            {
-                case 0:
-                    SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
-                    break;
-                case 1:
-                    Vector3 newPos = keypointIDs[0].transform.position;
-					newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(randRange / 3, randRange / 2);
-                    newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
-                    newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
-
-                    SpawnKeyPoint(newPos);
-                    break;
-                case 2:
-                    SpawnKeyPoint(RandomPoint(randRange / 2));
-                    break;
-                default:
-                    SpawnRandomKeyPoint(randRange);
-                    break;
-            }
-			// volume grows slightly faster than # points
-			randRange += randRangeStep * Mathf.Pow(keypointIDs.Count, 0.4f);
-
-            NewRound();
-        }
-    }
 
     void NewRound()
     {
 		fuel += 10f;
+		switch (nextKeypointIndex)
+		{
+		case 0:
+			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
+			break;
+		case 1:
+			Vector3 newPos = keypointIDs[0].transform.position;
+			newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(randRange / 3, randRange / 2);
+			newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
+			newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
+
+			SpawnKeyPoint(newPos);
+			break;
+		case 2:
+			SpawnKeyPoint(RandomPoint(randRange / 2));
+			break;
+		default:
+			SpawnRandomKeyPoint(randRange);
+			break;
+		}
+		// volume grows slightly faster than # points
+		randRange += randRangeStep * Mathf.Pow(keypointIDs.Count, 0.4f);
+	
 		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)

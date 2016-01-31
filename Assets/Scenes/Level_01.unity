@@ -1923,7 +1923,9 @@ MonoBehaviour:
   playerMoveSpeed: 5
   collectiblePrefabs:
   - {fileID: 122070, guid: 07fac52fc09407347839ca923b47abd3, type: 2}
+  - {fileID: 194468, guid: 792808d10fbf9d14f9ea36f05ffd8709, type: 2}
   - {fileID: 141864, guid: f4909710f857a994ca34eac8006844e2, type: 2}
+  - {fileID: 186140, guid: 68448883008fb9e4282a6cd2fc6d57d7, type: 2}
   roundTransition: 0
   transitionStart: {x: 0, y: 0, z: 0}
   fader: {fileID: 1958653337}
@@ -6400,7 +6402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1958653338
 RectTransform:
   m_ObjectHideFlags: 0

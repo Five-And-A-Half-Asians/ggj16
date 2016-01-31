@@ -290,9 +290,9 @@ public class MainScene : MonoBehaviour {
         }
         lastColor = c;
         obj.GetComponent<MeshRenderer>().material.SetColor("_Color", colors[c]);
-        float r = Mathf.Clamp(colors[c].r + 0.5f, 0f, 1f);
-        float g = Mathf.Clamp(colors[c].g + 0.5f, 0f, 1f);
-        float b = Mathf.Clamp(colors[c].b + 0.5f, 0f, 1f);
+        float r = Mathf.Clamp(colors[c].r - 0.5f, 0f, 1f);
+        float g = Mathf.Clamp(colors[c].g - 0.5f, 0f, 1f);
+        float b = Mathf.Clamp(colors[c].b - 0.5f, 0f, 1f);
         obj.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(r,g,b));
     }
 
@@ -318,7 +318,7 @@ public class MainScene : MonoBehaviour {
 		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
         if(playerMoveSpeed > 15f || roundTransition)
         {
-            accelEmitter.startSpeed = playerMoveSpeed;
+            accelEmitter.startSpeed = playerMoveSpeed/2f;
             accelEmitter.Play();
         } else
         {

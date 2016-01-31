@@ -2413,7 +2413,7 @@ Transform:
   m_LocalScale: {x: 1.8625405, y: 1.8625425, z: 1.8625425}
   m_Children: []
   m_Father: {fileID: 1732652126}
-  m_RootOrder: 7
+  m_RootOrder: 6
 --- !u!199 &1016353226
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -2814,7 +2814,7 @@ ParticleSystem:
       minMaxState: 0
     randomizeRotationDirection: 0.42
     gravityModifier: 0
-    maxNumParticles: 1005
+    maxNumParticles: 332
     rotation3D: 0
   ShapeModule:
     serializedVersion: 2
@@ -4328,10 +4328,10 @@ RectTransform:
   - {fileID: 1011503840}
   - {fileID: 499807032}
   - {fileID: 1106364842}
-  - {fileID: 1958653338}
   - {fileID: 1016353225}
   - {fileID: 2102480831}
   - {fileID: 1775598775}
+  - {fileID: 1958653338}
   m_Father: {fileID: 896368666}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
@@ -4415,7 +4415,7 @@ Transform:
   m_LocalScale: {x: 4.2017064, y: 4.2017097, z: 4.2017097}
   m_Children: []
   m_Father: {fileID: 1732652126}
-  m_RootOrder: 9
+  m_RootOrder: 8
 --- !u!199 &1775598776
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -4816,7 +4816,7 @@ ParticleSystem:
       minMaxState: 0
     randomizeRotationDirection: 0
     gravityModifier: 0
-    maxNumParticles: 2000
+    maxNumParticles: 100
     rotation3D: 0
   ShapeModule:
     serializedVersion: 2
@@ -6219,7 +6219,7 @@ RectTransform:
   m_Children:
   - {fileID: 1425813031}
   m_Father: {fileID: 1732652126}
-  m_RootOrder: 6
+  m_RootOrder: 9
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 1, y: 1}
@@ -6319,7 +6319,7 @@ Transform:
   m_LocalScale: {x: 4.2017064, y: 4.2017097, z: 4.2017097}
   m_Children: []
   m_Father: {fileID: 1732652126}
-  m_RootOrder: 8
+  m_RootOrder: 7
 --- !u!199 &2102480832
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0

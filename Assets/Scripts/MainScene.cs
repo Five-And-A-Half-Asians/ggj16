@@ -13,8 +13,8 @@ public class MainScene : MonoBehaviour {
     public Text centerText;
     public Text fuelText;
 
-	public float randRange = 5f; // real value set in Reset()
-	public float randRangeStep = 1f;
+	public float randRange = 4f; // real value set in Reset()
+	public float randRangeStep = 0.1f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -81,7 +81,7 @@ public class MainScene : MonoBehaviour {
         keypointIDs = new List<GameObject>(); // needed to clear the list
         NewRound();
         centerText.text = proceedText;
-		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f), Tween.tweenMode.FADE_IN, 0.6f);
+		fader.GetComponent<Fader>().SetTween(new Color(0 / 255f, 0 / 255f, 0 / 255f, 100/255f), Tween.tweenMode.FADE_IN, 0.6f);
         particleEmitter.GetComponent<TrailRenderer>().Clear();
         particleEmitter.GetComponent<TrailRenderer>().enabled = true;
     }
@@ -143,11 +143,11 @@ public class MainScene : MonoBehaviour {
 		PlayerMove();
 
         // debug distribution
-        //		SpawnRandomKeyPoint (randRange);
+//        SpawnRandomKeyPoint (randRange);
         // Spawning
         if (nextKeypointIndex == keypointIDs.Count)
         {
-            fader.GetComponent<Fader>().SetTween(new Color(115 / 255f, 155 / 255f, 255 / 255f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.5f);
+            fader.GetComponent<Fader>().SetTween(new Color(0.8f, 0.8f, 0.8f, 0.3f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.3f);
             NewRound();
         }
     }
@@ -161,6 +161,7 @@ public class MainScene : MonoBehaviour {
 		{
 		case 0:
 			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
+//			SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);SpawnRandomKeyPoint (randRange);
 			break;
 		case 1:
 			Vector3 newPos = keypointIDs[0].transform.position;
@@ -209,6 +210,7 @@ public class MainScene : MonoBehaviour {
             nextKeypointIndex++;
             score++;
 			fuel += nextKeypointIndex * randRangeStep; // increase fuel when object picked up
+			fader.GetComponent<Fader>().SetTween(new Color(1f, 1f, 1f, 0.05f), 0.5f, 0f, 0.5f, Tween.tweenMode.FADE_IN, 0.8f);
 			return true;
         } else {
             //game over
@@ -256,8 +258,10 @@ public class MainScene : MonoBehaviour {
 		bool invalidPoint;
 		Vector3 point;
 		do {
-			point = keypointIDs[keypointIDs.Count -1].transform.position + RandomPoint(range/3);
+			GameObject lastKeyPoint = keypointIDs[keypointIDs.Count -1];
+			point = lastKeyPoint.transform.position + RandomPoint(range);
 			invalidPoint = false;
+			if (Vector3.Distance(lastKeyPoint.transform.position, point) < 10f)
 			foreach (GameObject go in keypointIDs) {
 				if (Vector3.Distance(go.transform.position, point) < 5f) {
 					invalidPoint = true;

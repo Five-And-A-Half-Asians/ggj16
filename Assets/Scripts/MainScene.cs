@@ -11,8 +11,8 @@ public class MainScene : MonoBehaviour {
     public Text timerText;
     public Text fuelText;
 
-    public float randRange = 2f;
-	public float randRangeStep = 0.5f;
+	public float randRange = 5f; // real value set in Reset()
+	public float randRangeStep = 1f;
     
 	public float playerMoveSpeed = 0f;
 
@@ -24,6 +24,8 @@ public class MainScene : MonoBehaviour {
     private bool gameRunning;
     private float timeElapsed = 0;
     private float fuel;
+    private float minutes;
+    private float seconds;
 
     public GameObject[] collectiblePrefabs;
     Color[] colors = {new Color(7/255f,114/255f,222/255f),// new Color(95/255f,164/255f,223/255f),
@@ -41,6 +43,9 @@ public class MainScene : MonoBehaviour {
 
     public bool roundTransition = false;
     public Vector3 transitionStart;
+
+    public GameObject fader;
+
     // Use this for initialization
     void Start()
 	{
@@ -52,74 +57,67 @@ public class MainScene : MonoBehaviour {
     // called on loss
     void GameOver()
     {
-        Debug.Log("gameover top: roundtransition is " + roundTransition);
-        Reset("GAME OVER SCORE: " + score + ". TAP TO START");
-        Debug.Log("gameover bottom: roundtransition is " + roundTransition);
+        Reset("GAME OVER\nSCORE: " + score + "\n TIME ELAPSED: " + 
+            string.Format("{0:00}:{1:00}", minutes, seconds) + "\nTAP TO START");
     }
 
     // clean up the game
     void Reset(string proceedText)
     {
-        Debug.Log("reset top: roundtransition is " + roundTransition);
-        timeElapsed = 0;
+		score = 0;
+		timeElapsed = 0f;
+		randRange = 20f;
         gameRunning = false;
         roundTransition = false;
-        fuel = 30f;
+        fuel = 0f;
         player.transform.position = new Vector3(0, 0, 0);
         foreach (GameObject go in keypointIDs)
         {
             Destroy(go.gameObject);
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
-        Spawn();
-        nextKeypointIndex = 0;
-        score = 0;
-        playerMoveSpeed = 0f;
+		NewRound();
         centerText.text = proceedText;
-        Debug.Log("reset bottom: roundtransition is " + roundTransition);
+        fader.GetComponent<Fader>().SetTween(new Color(150 / 255f, 200 / 255f, 200 / 255f), Tween.tweenMode.FADE_IN, 0.4f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // don't update during round transitions
-        if (roundTransition)
+        // Listen for esc to quit
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
-            Debug.Log("roundTransition update check: roundtransition is " + roundTransition);
-            Debug.Log("skipping update loop since we're in round transition");
-            return;
+            Debug.Log("escape pressed");
+            Reset("Tap to Start");
         }
 
-        if (Input.GetMouseButton(0) || Input.GetButton("Fire1")) Debug.Log("BUTTON PRESSED"); // DEBUG
+        // don't update during round transitions
+        if (roundTransition)
+            return;
+
         // Update HUD time
-        if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = score + " collected";
-        roundText.text = "Round " + keypointIDs.Count;
-        var minutes = timeElapsed / 60;
-        var seconds = timeElapsed % 60;
+		if (gameRunning) timeElapsed += Time.deltaTime;
+        scoreText.text = "SCORE " + score;
+        roundText.text = "LEVEL " + keypointIDs.Count;
+        minutes = timeElapsed / 60;
+        seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;
         //timerText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        //timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         // Handle fuel tickdown
-        if (gameRunning)
+		if (gameRunning && playerMoveSpeed > 0)
         {
-            fuel -= Time.deltaTime;
-            if (fuel < 0)
-            {
-                fuel = 0;
-            }
-            fuelText.text = fuel.ToString("#.0000");
-            if (fuel == 0)
-            {
-                Debug.Log("out of fuel");
+			fuel = Mathf.Max(0, fuel - Time.deltaTime);
+            fuelText.text = fuel.ToString("#.00");
+            
+			if (fuel == 0)
                 GameOver();
-            }
         }
 
         // HUD prompt for acceleration at start of game
         if (gameRunning) {
-            if (timeElapsed < 5)
+            if (timeElapsed < 5f)
                 centerText.text = "Hold to accelerate";
             else
                 centerText.text = "";
@@ -129,63 +127,53 @@ public class MainScene : MonoBehaviour {
         if (!gameRunning) {
             if (Input.GetMouseButton(0) || Input.GetButton("Fire1"))
             {
-                Debug.Log("game started due to button press");
                 gameRunning = true;
             }
             else
             {
                 return;
             }
-		}
-
-        // Listen for esc to quit
-        if (Input.GetKeyUp(KeyCode.Escape))
-        {
-            Debug.Log("game ended due to escape");
-            GameOver();
-        }
-            
+		}            
 
         // Movement
 		PlayerMove();
 
+		// debug distribution
+		//		SpawnRandomKeyPoint (randRange);
         // Spawning
-        Spawn();
+		if (nextKeypointIndex == keypointIDs.Count)
+			NewRound();
     }
 
-    void Spawn()
-    {
-        if (nextKeypointIndex == keypointIDs.Count)
-        {
-            switch (nextKeypointIndex)
-            {
-                case 0:
-                    SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
-                    break;
-                case 1:
-                    Vector3 newPos = keypointIDs[0].transform.position;
-                    newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(1.5f, randRange / 2);
-                    newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
-                    newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
-
-                    SpawnKeyPoint(newPos);
-                    break;
-                case 2:
-                    SpawnKeyPoint(RandomPoint(randRange * 0.5f));
-                    break;
-                default:
-                    SpawnRandomKeyPoint(randRange);
-                    break;
-            }
-            randRange += randRangeStep;
-            Debug.Log("roundTransition is about to be set to true");
-            NewRound();
-        }
-    }
 
     void NewRound()
     {
-        roundTransition = true;
+		fuel += 10f;
+		nextKeypointIndex = 0;
+		switch (keypointIDs.Count)
+		{
+		case 0:
+			SpawnKeyPoint(Vector3.Normalize(Camera.main.transform.forward) * 10f);
+			break;
+		case 1:
+			Vector3 newPos = keypointIDs[0].transform.position;
+			newPos += Vector3.Normalize(Camera.main.transform.forward) * Random.Range(randRange / 3, randRange / 2);
+			newPos += Vector3.Normalize(Camera.main.transform.up) * Random.Range(-randRange / 2, randRange / 2);
+			newPos += Vector3.Normalize(Camera.main.transform.right) * Random.Range(-randRange / 2, randRange / 2);
+
+			SpawnKeyPoint(newPos);
+			break;
+//		case 2:
+//			SpawnKeyPoint(RandomPoint(randRange / 2));
+//			break;
+		default:
+			SpawnRandomKeyPoint(randRange);
+			break;
+		}
+		// volume grows slightly faster than # points
+		randRange += randRangeStep; // code for uniform distr * Mathf.Pow(keypointIDs.Count, 0.4f);
+		Debug.Log("RandRange = " + randRange);
+		roundTransition = true;
         transitionStart = player.transform.position;
         foreach (GameObject go in keypointIDs)
         {
@@ -194,22 +182,27 @@ public class MainScene : MonoBehaviour {
         //player.transform.position = new Vector3(0, 0, 0);
         nextKeypointIndex = 0;
 		playerMoveSpeed = 0f;
-        centerText.text = "Tap to Continue";
+        if (keypointIDs.Count > 3)
+        {
+            centerText.text = "Good job!";
+        }
+        else
+        {
+            centerText.text = "Tap to Continue";
+        }
     }
 
     public bool CheckKeyPointCollision(GameObject go)
     {
-        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition)
-        {
-
+		if (roundTransition)
+			return false;
+		
+        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition) {
             nextKeypointIndex++;
-            Debug.Log("Found " + nextKeypointIndex + " items.");
             score++;
-            fuel = 30f;
+            fuel += (nextKeypointIndex)*1.5f; // increase fuel when object picked up
             return true;
-        }
-        else
-        {
+        } else {
             //game over
             GameOver();
             return false;
@@ -220,13 +213,17 @@ public class MainScene : MonoBehaviour {
 	{
 	    if (roundTransition)
 		{
-			player.transform.position *= (1f - (1.5f * Time.deltaTime) / player.transform.position.magnitude);
-			player.transform.position *= 1f - 1.5f * Time.deltaTime;
+            if (player.transform.position.magnitude != 0)
+            {
+                player.transform.position *= (1f - (1.5f * Time.deltaTime) / (player.transform.position.magnitude));
+                player.transform.position *= 1f - 1.5f * Time.deltaTime;
+            }
 
 			if (player.transform.position.magnitude <= 0.05f)
 			{
 				player.transform.position = Vector3.zero;
 				player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				playerMoveSpeed = 0f;
 				roundTransition = false;
 			}
 		}
@@ -236,7 +233,7 @@ public class MainScene : MonoBehaviour {
 		bool invalidPoint;
 		Vector3 point;
 		do {
-			point = RandomPoint(range);
+			point = keypointIDs[keypointIDs.Count -1].transform.position + RandomPoint(range/3);
 			invalidPoint = false;
 			foreach (GameObject go in keypointIDs) {
 				if (Vector3.Distance(go.transform.position, point) < 3f) {
@@ -269,7 +266,7 @@ public class MainScene : MonoBehaviour {
     void PlayerMove()
     {
 		if (Input.GetMouseButton (0) || Input.GetButton ("Fire1")) {
-			float playerAccel = 0.1f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.01f * Mathf.Pow(1.1f, playerMoveSpeed);
+			float playerAccel = 0.15f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.015f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerAccel = Mathf.Min (10, playerAccel);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
 		}
@@ -277,14 +274,14 @@ public class MainScene : MonoBehaviour {
 		if (playerMoveSpeed > 0f) { // don't start moving until tap
 			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
-
 		}
 
 		// make it harder to escape
-		if (playerMoveSpeed > 10f) playerMoveSpeed *= 0.95f;
-		if (playerMoveSpeed > 20f) playerMoveSpeed *= 0.90f;
-		playerMoveSpeed = Mathf.Min (100, playerMoveSpeed);
-        
+		if (playerMoveSpeed > 10f) playerMoveSpeed *= 0.99f;
+		if (playerMoveSpeed > 60f) playerMoveSpeed *= 0.99f;
+		if (playerMoveSpeed > 90f) playerMoveSpeed *= 0.90f;
+		playerMoveSpeed = Mathf.Min (1000, playerMoveSpeed);
+
 		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
     }
 }

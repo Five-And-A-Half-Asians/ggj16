@@ -99,8 +99,8 @@ public class MainScene : MonoBehaviour {
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
-        scoreText.text = "SCOrE " + score;
-        roundText.text = "LEVEL " + keypointIDs.Count;
+        scoreText.text = "SCOrE\n" + score;
+        roundText.text = "LEVEL\n" + keypointIDs.Count;
         minutes = timeElapsed / 60;
         seconds = timeElapsed % 60;
         //var fraction = (timeElapsed * 100) % 100;

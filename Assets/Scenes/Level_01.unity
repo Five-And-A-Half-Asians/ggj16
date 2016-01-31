@@ -1862,10 +1862,12 @@ MonoBehaviour:
     m_Alignment: 2
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Score 0
+  m_Text: 'SCOrE
+
+    0'
 --- !u!1 &767662096
 GameObject:
   m_ObjectHideFlags: 0
@@ -1898,7 +1900,6 @@ MonoBehaviour:
   roundText: {fileID: 863826259}
   scoreText: {fileID: 718370911}
   centerText: {fileID: 1367392200}
-  timerText: {fileID: 0}
   fuelText: {fileID: 1106364843}
   randRange: 20
   randRangeStep: 1
@@ -2025,7 +2026,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Round 0
+  m_Text: 'LEVEL
+
+    0'
 --- !u!1 &896368665
 GameObject:
   m_ObjectHideFlags: 0

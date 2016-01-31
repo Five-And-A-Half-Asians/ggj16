@@ -88,9 +88,7 @@ public class MainScene : MonoBehaviour {
 
         // don't update during round transitions
         if (roundTransition)
-        {
             return;
-        }
 
         // Update HUD time
 		if (gameRunning) timeElapsed += Time.deltaTime;
@@ -189,16 +187,15 @@ public class MainScene : MonoBehaviour {
 
     public bool CheckKeyPointCollision(GameObject go)
     {
-        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition)
-        {
-
+		if (roundTransition)
+			return false;
+		
+        if (keypointIDs[nextKeypointIndex] == go&&!roundTransition) {
             nextKeypointIndex++;
             score++;
             fuel += (nextKeypointIndex)*1.5f; // increase fuel when object picked up
             return true;
-        }
-        else
-        {
+        } else {
             //game over
             GameOver();
             return false;

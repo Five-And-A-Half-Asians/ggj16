@@ -146,20 +146,20 @@ TrailRenderer:
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 4294964127
+      rgba: 4294960429
     m_Color[1]:
       serializedVersion: 2
       rgba: 4294960429
     m_Color[2]:
       serializedVersion: 2
-      rgba: 4290408227
+      rgba: 4294960429
     m_Color[3]:
       serializedVersion: 2
-      rgba: 3635883810
+      rgba: 3640649005
     m_Color[4]:
       serializedVersion: 2
-      rgba: 2810910771
-  m_MinVertexDistance: 0.1
+      rgba: 2818565421
+  m_MinVertexDistance: 3
   m_Autodestruct: 0
 --- !u!1 &412905055
 GameObject:
@@ -248,7 +248,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 499807031}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.023}
+  m_LocalPosition: {x: 0, y: 0, z: 0.074}
   m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_Children: []
   m_Father: {fileID: 1732652126}
@@ -4143,7 +4143,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: b038bd48bc30f7842b067b7ddf1c6f72, type: 3}
-    m_FontSize: 4
+    m_FontSize: 5
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0

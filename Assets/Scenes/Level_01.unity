@@ -2058,7 +2058,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 825636120}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -2206,7 +2206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SelectionDuration: 1
   m_HideOnStart: 0
-  m_Selection: {fileID: 825636122}
+  m_Selection: {fileID: 0}
   m_VRInput: {fileID: 896368671}
 --- !u!114 &896368670
 MonoBehaviour:
@@ -2300,7 +2300,7 @@ Camera:
     height: 1
   near clip plane: 0.15
   far clip plane: 1000
-  field of view: 60
+  field of view: 96
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -4443,7 +4443,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1594119499}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -6530,7 +6530,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2133570049}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 

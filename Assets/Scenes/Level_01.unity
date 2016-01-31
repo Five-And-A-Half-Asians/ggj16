@@ -290,7 +290,7 @@ MonoBehaviour:
   timerText: {fileID: 83634009}
   fuelText: {fileID: 1106364843}
   randRange: 20
-  randRangeStep: 4
+  randRangeStep: 1
   playerMoveSpeed: 5
   collectiblePrefabs:
   - {fileID: 122070, guid: 07fac52fc09407347839ca923b47abd3, type: 2}

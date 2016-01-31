@@ -1920,9 +1920,6 @@ MonoBehaviour:
   scoreText: {fileID: 718370911}
   centerText: {fileID: 1367392200}
   fuelText: {fileID: 1106364843}
-  randRange: 20
-  randRangeStep: 1
-  minDist: 1
   playerMoveSpeed: 5
   collectiblePrefabs:
   - {fileID: 122070, guid: 07fac52fc09407347839ca923b47abd3, type: 2}
@@ -4099,7 +4096,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 0:00
+  m_Text: 0
 --- !u!222 &1106364844
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -125,7 +125,7 @@ public class MainScene : MonoBehaviour {
 		if (gameRunning && playerMoveSpeed > 0)
         {
 			fuel = Mathf.Max(0, fuel - Time.deltaTime);
-            fuelText.text = fuel.ToString("#.00");
+			fuelText.text = (fuel * 3).ToString("#");
             
 			if (fuel == 0)
                 GameOver();

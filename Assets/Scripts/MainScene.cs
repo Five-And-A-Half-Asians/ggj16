@@ -61,10 +61,11 @@ public class MainScene : MonoBehaviour {
     // clean up the game
     void Reset(string proceedText)
     {
-        timeElapsed = 0;
+		score = 0;
+		timeElapsed = 0;
         gameRunning = false;
         roundTransition = false;
-        fuel = 10f; // starting fuel amount
+        fuel = 0f;
         player.transform.position = new Vector3(0, 0, 0);
         foreach (GameObject go in keypointIDs)
         {
@@ -72,8 +73,6 @@ public class MainScene : MonoBehaviour {
         }
         keypointIDs = new List<GameObject>(); // needed to clear the list
 		NewRound();
-        score = 0;
-        playerMoveSpeed = 0f;
         centerText.text = proceedText;
     }
 
@@ -94,7 +93,7 @@ public class MainScene : MonoBehaviour {
         }
 
         // Update HUD time
-        if (gameRunning) timeElapsed += Time.deltaTime;
+		if (gameRunning && playerMoveSpeed > 0f) timeElapsed += Time.deltaTime;
         scoreText.text = score + " collected";
         roundText.text = "Round " + keypointIDs.Count;
         minutes = timeElapsed / 60;
@@ -115,7 +114,7 @@ public class MainScene : MonoBehaviour {
 
         // HUD prompt for acceleration at start of game
         if (gameRunning) {
-            if (timeElapsed < 5)
+            if (timeElapsed < 5f)
                 centerText.text = "Hold to accelerate";
             else
                 centerText.text = "";
@@ -265,13 +264,11 @@ public class MainScene : MonoBehaviour {
 			float playerAccel = 0.15f * Mathf.Pow (playerMoveSpeed, 0.3f) + 0.015f * Mathf.Pow(1.1f, playerMoveSpeed);
 			playerAccel = Mathf.Min (10, playerAccel);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed + playerAccel);
-			Debug.Log ("playerAccel = " + playerAccel);
 		}
 
 		if (playerMoveSpeed > 0f) { // don't start moving until tap
 			float playerAccel = 0.01f * Mathf.Pow(playerMoveSpeed/2f, 0.6f);
 			playerMoveSpeed = Mathf.Max (1f, playerMoveSpeed - playerAccel);
-//			Debug.Log ("playerDecel = " + playerAccel);
 		}
 
 		// make it harder to escape
@@ -279,7 +276,6 @@ public class MainScene : MonoBehaviour {
 		if (playerMoveSpeed > 60f) playerMoveSpeed *= 0.99f;
 		if (playerMoveSpeed > 90f) playerMoveSpeed *= 0.90f;
 		playerMoveSpeed = Mathf.Min (1000, playerMoveSpeed);
-		Debug.Log ("playerSpeed = " + playerMoveSpeed);
 
 		player.transform.position = player.transform.position + Camera.main.transform.forward * playerMoveSpeed * Time.deltaTime;
     }
